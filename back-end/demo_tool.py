@@ -22,11 +22,26 @@ def get_window_dimensions():
     if not marker_detect_success:
         raise Exception
     
-    edges = cv.Canny(
+    canny_image = cv.Canny(
         image       =grayscale_image, 
-        threshold1  =200, 
+        threshold1  =220, 
         threshold2  =255
         )
+    
+    canny_image = cv.dilate(
+        src         =canny_image, 
+        kernel      =np.ones((5, 5), np.uint8), 
+        iterations  =1
+        )
+    
+    canny_image = cv.morphologyEx(
+        src         =canny_image, 
+        op          =cv.MORPH_CLOSE, 
+        kernel      =np.ones((5, 5), np.uint8), 
+        iterations  =2
+        )
+
+    cv.imwrite("canny.jpg", canny_image)
 
     x, y = grayscale_image.shape
     lines_image = np.zeros(
@@ -35,14 +50,14 @@ def get_window_dimensions():
         )
 
     lines = cv.HoughLinesP(
-        image           =edges, 
+        image           =canny_image, 
         rho             =1, 
         theta           =np.pi / 180, 
-        threshold       =50, 
-        minLineLength   =800, 
-        maxLineGap      =120
+        threshold       =30, 
+        minLineLength   =1000, 
+        maxLineGap      =50
         )
-
+    
     for line in lines:
         x1, y1, x2, y2 = line[0]  # Extract line endpoints
         cv.line(
@@ -53,6 +68,8 @@ def get_window_dimensions():
             thickness   =3
             )
     
+    cv.imwrite("lines_image.jpg", lines_image)
+    
     contours, _ = cv.findContours(
         image   =lines_image, 
         mode    =cv.RETR_EXTERNAL, 
@@ -62,21 +79,30 @@ def get_window_dimensions():
     for contour in contours:
         window_candidate = cv.approxPolyDP(
             curve   =contour,
-            epsilon =0.02 * cv.arcLength(curve=contour, closed=True),
+            epsilon =0.003 * cv.arcLength(curve=contour, closed=True),
             closed  =True
         )
 
+        cv.polylines(
+            img=image,
+            pts=[window_candidate],
+            isClosed=True,
+            color=(0, 255, 0),
+            thickness=3
+        )
+
         # Does the shape have foru distinct sides?
-        if len(window_candidate) == 4:
+        if len(window_candidate) == 4 and cv.isContourConvex(window_candidate):
+            print("Success!")
             cv.drawContours(
                 image       =image,
                 contours    =[window_candidate],
                 contourIdx  =-1,   # This draws all contours in the array.
-                color       =(255, 0, 0),
-                thickness   =3
+                color       =(0, 0, 255),
+                thickness   =10
             )
     
-    cv.imwrite("lines_image.jpg", lines_image)
+    cv.imwrite("contours.jpg", image)
 
 if __name__ == "__main__":
     get_window_dimensions()
