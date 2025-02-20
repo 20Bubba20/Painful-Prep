@@ -23,32 +23,60 @@ def get_window_dimensions():
         raise Exception
     
     edges = cv.Canny(
-        image=grayscale_image, 
-        threshold1=200, 
-        threshold2=255
+        image       =grayscale_image, 
+        threshold1  =200, 
+        threshold2  =255
         )
-    
-    cv.imwrite("canny.jpg", edges)
+
+    x, y = grayscale_image.shape
+    lines_image = np.zeros(
+        shape=(x, y), 
+        dtype=np.uint8
+        )
 
     lines = cv.HoughLinesP(
-        image=edges, 
-        rho=1, theta=np.pi / 180, 
-        threshold=50, 
-        minLineLength=800, 
-        maxLineGap=120
+        image           =edges, 
+        rho             =1, 
+        theta           =np.pi / 180, 
+        threshold       =50, 
+        minLineLength   =800, 
+        maxLineGap      =120
         )
 
     for line in lines:
         x1, y1, x2, y2 = line[0]  # Extract line endpoints
         cv.line(
-            img=image, 
-            pt1=(x1, y1), 
-            pt2=(x2, y2), 
-            color=(0, 255, 0), 
-            thickness=3
+            img         =lines_image, 
+            pt1         =(x1, y1), 
+            pt2         =(x2, y2), 
+            color       =255, 
+            thickness   =3
             )
     
-    cv.imwrite("lines.jpg", image)
+    contours, _ = cv.findContours(
+        image   =lines_image, 
+        mode    =cv.RETR_EXTERNAL, 
+        method  =cv.CHAIN_APPROX_SIMPLE
+        )
+    
+    for contour in contours:
+        window_candidate = cv.approxPolyDP(
+            curve   =contour,
+            epsilon =0.02 * cv.arcLength(curve=contour, closed=True),
+            closed  =True
+        )
+
+        # Does the shape have foru distinct sides?
+        if len(window_candidate) == 4:
+            cv.drawContours(
+                image       =image,
+                contours    =[window_candidate],
+                contourIdx  =-1,   # This draws all contours in the array.
+                color       =(255, 0, 0),
+                thickness   =3
+            )
+    
+    cv.imwrite("lines_image.jpg", lines_image)
 
 if __name__ == "__main__":
     get_window_dimensions()
