@@ -3,24 +3,10 @@ import numpy as np
 
 MARKER_LENGTH_MM = 100
 
-def get_window_dimensions():
+def find_windowpane() -> np.ndarray:
     path = "/home/tminnich/projects/capstone/Painful-Prep/back-end/test/test-images/img_002.JPG"
     image = cv.imread(path, cv.IMREAD_COLOR_RGB)
     grayscale_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
-
-    aruco_corners, ids, _ = cv.aruco.detectMarkers(
-        grayscale_image,
-        cv.aruco.getPredefinedDictionary(cv.aruco.DICT_4X4_50)
-        )
-    
-    marker_detect_success = False
-    for i, marker_id in enumerate(ids.flatten()):
-        if marker_id == 0:
-            marker_detect_success = True
-            break
-
-    if not marker_detect_success:
-        raise Exception
     
     canny_image = cv.Canny(
         image       =grayscale_image, 
@@ -69,10 +55,10 @@ def get_window_dimensions():
             )
         
     lines_image = cv.morphologyEx(
-        src=lines_image,
-        op=cv.MORPH_CLOSE,
-        kernel=np.ones((5, 5), np.uint8),
-        iterations=2
+        src         =lines_image,
+        op          =cv.MORPH_CLOSE,
+        kernel      =np.ones((5, 5), np.uint8),
+        iterations  =2
     )
     
     cv.imwrite("lines_image.jpg", lines_image)
@@ -83,6 +69,7 @@ def get_window_dimensions():
         method  =cv.CHAIN_APPROX_SIMPLE
         )
     
+    window_candidate = None
     contours = sorted(contours, key=cv.contourArea, reverse=True)
     if contours:
         contour = contours[0]
@@ -94,11 +81,11 @@ def get_window_dimensions():
         )
 
         cv.polylines(
-            img=image,
-            pts=[window_candidate],
-            isClosed=True,
-            color=(0, 255, 0),
-            thickness=25
+            img         =image,
+            pts         =[window_candidate],
+            isClosed    =True,
+            color       =(0, 255, 0),
+            thickness   =25
         )
 
         # Does the shape have four distinct sides?
@@ -114,5 +101,53 @@ def get_window_dimensions():
     
     cv.imwrite("contours.jpg", image)
 
+    return window_candidate
+
+def get_window_dimensions(quadrilateral: np.ndarray):
+    path = "/home/tminnich/projects/capstone/Painful-Prep/back-end/test/test-images/img_002.JPG"
+    image = cv.imread(path, cv.IMREAD_GRAYSCALE)
+
+    aruco_corners, ids, _ = cv.aruco.detectMarkers(
+        image,
+        cv.aruco.getPredefinedDictionary(cv.aruco.DICT_4X4_50)
+        )
+    
+    marker_detect_success = False
+    marker_corners = None
+    for i, marker_id in enumerate(ids.flatten()):
+        if marker_id == 0:
+            marker_corners = aruco_corners[i][0]
+            marker_detect_success = True
+            break
+
+    if not marker_detect_success:
+        raise Exception
+    
+    tl_marker = marker_corners[0]
+    tr_marker = marker_corners[1]
+    displacement_marker = tl_marker - tr_marker
+    # Compute Euclidean norm (distance) between two points.
+    norm_marker_px = np.linalg.norm(displacement_marker)
+    
+    scale_mm = MARKER_LENGTH_MM / norm_marker_px
+
+    window_corners = quadrilateral.reshape(-1, 2)
+    print(window_corners)
+
+    tl_window = window_corners[0]
+    tr_window = window_corners[1]
+    displacement_width_window = tl_window - tr_window
+    norm_width_px = np.linalg.norm(displacement_width_window)
+    window_width_mm = norm_width_px * scale_mm
+    
+    bl_window = window_corners[3]
+    displacement_height_window = tl_window - bl_window
+    norm_height_px = np.linalg.norm(displacement_height_window)
+    window_height_mm = norm_height_px * scale_mm
+
+    return window_width_mm, window_height_mm
+
 if __name__ == "__main__":
-    get_window_dimensions()
+    windowpane = find_windowpane()
+    width, height = get_window_dimensions(windowpane)
+    print(height, width)
