@@ -24,14 +24,14 @@ def get_window_dimensions():
     
     canny_image = cv.Canny(
         image       =grayscale_image, 
-        threshold1  =220, 
+        threshold1  =200, 
         threshold2  =255
         )
     
     canny_image = cv.dilate(
         src         =canny_image, 
         kernel      =np.ones((5, 5), np.uint8), 
-        iterations  =1
+        iterations  =2
         )
     
     canny_image = cv.morphologyEx(
@@ -43,9 +43,9 @@ def get_window_dimensions():
 
     cv.imwrite("canny.jpg", canny_image)
 
-    x, y = grayscale_image.shape
+    height, width = grayscale_image.shape
     lines_image = np.zeros(
-        shape=(x, y), 
+        shape=(height, width), 
         dtype=np.uint8
         )
 
@@ -53,9 +53,9 @@ def get_window_dimensions():
         image           =canny_image, 
         rho             =1, 
         theta           =np.pi / 180, 
-        threshold       =30, 
+        threshold       =25, 
         minLineLength   =1000, 
-        maxLineGap      =50
+        maxLineGap      =55
         )
     
     for line in lines:
@@ -65,8 +65,15 @@ def get_window_dimensions():
             pt1         =(x1, y1), 
             pt2         =(x2, y2), 
             color       =255, 
-            thickness   =3
+            thickness   =1
             )
+        
+    lines_image = cv.morphologyEx(
+        src=lines_image,
+        op=cv.MORPH_CLOSE,
+        kernel=np.ones((5, 5), np.uint8),
+        iterations=2
+    )
     
     cv.imwrite("lines_image.jpg", lines_image)
     
@@ -76,10 +83,13 @@ def get_window_dimensions():
         method  =cv.CHAIN_APPROX_SIMPLE
         )
     
-    for contour in contours:
+    contours = sorted(contours, key=cv.contourArea, reverse=True)
+    if contours:
+        contour = contours[0]
+
         window_candidate = cv.approxPolyDP(
             curve   =contour,
-            epsilon =0.003 * cv.arcLength(curve=contour, closed=True),
+            epsilon =0.015 * cv.arcLength(curve=contour, closed=True),
             closed  =True
         )
 
@@ -88,12 +98,12 @@ def get_window_dimensions():
             pts=[window_candidate],
             isClosed=True,
             color=(0, 255, 0),
-            thickness=3
+            thickness=25
         )
 
-        # Does the shape have foru distinct sides?
-        if len(window_candidate) == 4 and cv.isContourConvex(window_candidate):
-            print("Success!")
+        # Does the shape have four distinct sides?
+        if len(window_candidate) == 4:
+            print("Success! Maybe?")
             cv.drawContours(
                 image       =image,
                 contours    =[window_candidate],
