@@ -2,6 +2,7 @@ import cv2 as cv
 import numpy as np
 
 MARKER_LENGTH_MM = 100
+MM_IN_RATIO = 25.4
 
 def find_windowpane() -> np.ndarray:
     path = "/home/tminnich/projects/capstone/Painful-Prep/back-end/test/test-images/img_002.JPG"
@@ -90,7 +91,6 @@ def find_windowpane() -> np.ndarray:
 
         # Does the shape have four distinct sides?
         if len(window_candidate) == 4:
-            print("Success! Maybe?")
             cv.drawContours(
                 image       =image,
                 contours    =[window_candidate],
@@ -132,7 +132,6 @@ def get_window_dimensions(quadrilateral: np.ndarray):
     scale_mm = MARKER_LENGTH_MM / norm_marker_px
 
     window_corners = quadrilateral.reshape(-1, 2)
-    print(window_corners)
 
     tl_window = window_corners[0]
     tr_window = window_corners[1]
@@ -145,9 +144,13 @@ def get_window_dimensions(quadrilateral: np.ndarray):
     norm_height_px = np.linalg.norm(displacement_height_window)
     window_height_mm = norm_height_px * scale_mm
 
-    return window_width_mm, window_height_mm
+    window_width_in = window_width_mm / MM_IN_RATIO
+    window_height_in = window_height_mm / MM_IN_RATIO
+
+    return window_width_in, window_height_in
 
 if __name__ == "__main__":
     windowpane = find_windowpane()
     width, height = get_window_dimensions(windowpane)
-    print(height, width)
+    print(f"Width: {width:.2f} in")
+    print(F"Height: {height:.2f} in")
