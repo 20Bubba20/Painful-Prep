@@ -1,14 +1,29 @@
+"""
+Gets dimensions for window in picture file.
+
+Usage: python demo_tool.py <file_path>
+"""
+
 import cv2 as cv
 import numpy as np
+import sys
+from pathlib import Path
 
 MARKER_LENGTH_MM = 100
 MM_IN_RATIO = 25.4
 
-def find_windowpane() -> np.ndarray:
-    path = "/home/tminnich/projects/capstone/Painful-Prep/back-end/test/test-images/img_002.JPG"
+def find_windowpane(path: Path) -> np.ndarray:
+    """Finds window.
+
+    Args:
+        path (pathlib.Path): File path to picture containing window.
+
+    Returns:
+        numpy.ndarray: Coordinates of corners of window.
+    """
     image = cv.imread(path, cv.IMREAD_COLOR_RGB)
     grayscale_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
-    
+
     canny_image = cv.Canny(
         image       =grayscale_image, 
         threshold1  =200, 
@@ -103,8 +118,16 @@ def find_windowpane() -> np.ndarray:
 
     return window_candidate
 
-def get_window_dimensions(quadrilateral: np.ndarray):
-    path = "/home/tminnich/projects/capstone/Painful-Prep/back-end/test/test-images/img_002.JPG"
+def get_window_dimensions(path: str, quadrilateral: np.ndarray) -> tuple:
+    """Finds window dimensions.
+
+    Args:
+        path (pathlib.Path): File path to picture containing window.
+        quadrilateral (numpy.ndarray): Array object containing corner coordinates of window.
+
+    Returns:
+        tuple: Width and height of window in inches in that order.
+    """
     image = cv.imread(path, cv.IMREAD_GRAYSCALE)
 
     aruco_corners, ids, _ = cv.aruco.detectMarkers(
@@ -146,11 +169,18 @@ def get_window_dimensions(quadrilateral: np.ndarray):
 
     window_width_in = window_width_mm / MM_IN_RATIO
     window_height_in = window_height_mm / MM_IN_RATIO
-
+    
     return window_width_in, window_height_in
 
 if __name__ == "__main__":
-    windowpane = find_windowpane()
-    width, height = get_window_dimensions(windowpane)
-    print(f"Width: {width:.2f} in")
-    print(F"Height: {height:.2f} in")
+    if len(sys.argv) != 2:
+        print(__doc__)
+        exit()
+    if not Path(sys.argv[1]).exists():
+        print(__doc__)
+        exit()
+
+    windowpane = find_windowpane(sys.argv[1])
+    width, height = get_window_dimensions(sys.argv[1], windowpane)
+    print(f"Width: {height:.2f} in")
+    print(F"Height: {width:.2f} in")
