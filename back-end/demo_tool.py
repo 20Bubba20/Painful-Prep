@@ -9,8 +9,23 @@ import numpy as np
 import sys
 from pathlib import Path
 
+from numpy.ma.core import bitwise_and
+
 MARKER_LENGTH_MM = 100
 MM_IN_RATIO = 25.4
+CONTRAST = 2.5
+BRIGHTNESS = 0
+
+
+def apply_dog(image: np.ndarray, sigma1=1.0, sigma2=2.0) -> np.ndarray:
+    blur1 = cv.GaussianBlur(image, (0, 0), sigma1)
+    blur2 = cv.GaussianBlur(image, (0, 0), sigma2)
+    dog = cv.subtract(blur1, blur2)
+
+    # Normalize to 0-255 for visibility
+    dog = cv.normalize(dog, None, 0, 255, cv.NORM_MINMAX).astype(np.uint8)
+
+    return dog
 
 def find_windowpane(path: Path) -> np.ndarray:
     """Finds window.
@@ -45,6 +60,21 @@ def find_windowpane(path: Path) -> np.ndarray:
 
     cv.imwrite("canny.jpg", canny_image)
 
+    dog_pass_1 = apply_dog(image=grayscale_image, sigma1=5.0, sigma2=6.0)
+    dog_pass_2 = apply_dog(image=grayscale_image, sigma1=25.0, sigma2=26.0)
+
+    cv.imwrite("dog1.jpg", dog_pass_1)
+    cv.imwrite("dog2.jpg", dog_pass_2)
+
+    super_dog = apply_dog(image=bitwise_and(dog_pass_1, dog_pass_2), sigma1=10.0, sigma2=11.0)
+    dog_image = cv.threshold(bitwise_and(dog_pass_1, dog_pass_2), 1, 255, cv.THRESH_BINARY)[1]
+    cv.imwrite("super_dog.jpg", super_dog)
+
+    cv.imwrite("dog.jpg", dog_image)
+
+    combined_image = cv.bitwise_and(dog_image, canny_image)
+    cv.imwrite("combined.jpg", combined_image)
+
     height, width = grayscale_image.shape
     lines_image = np.zeros(
         shape=(height, width), 
@@ -52,7 +82,7 @@ def find_windowpane(path: Path) -> np.ndarray:
         )
 
     lines = cv.HoughLinesP(
-        image           =canny_image, 
+        image           =combined_image,
         rho             =1, 
         theta           =np.pi / 180, 
         threshold       =25, 
