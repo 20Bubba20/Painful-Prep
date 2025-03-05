@@ -13,8 +13,6 @@ from numpy.ma.core import bitwise_and
 
 MARKER_LENGTH_MM = 100
 MM_IN_RATIO = 25.4
-CONTRAST = 2.5
-BRIGHTNESS = 0
 
 
 def apply_dog(image: np.ndarray, sigma1=1.0, sigma2=2.0) -> np.ndarray:
@@ -26,6 +24,28 @@ def apply_dog(image: np.ndarray, sigma1=1.0, sigma2=2.0) -> np.ndarray:
     dog = cv.normalize(dog, None, 0, 255, cv.NORM_MINMAX).astype(np.uint8)
 
     return dog
+
+def apply_canny(image: np.ndarray):
+
+    canny_image = cv.Canny(
+        image=image,
+        threshold1=200,
+        threshold2=255
+    )
+
+    canny_image = cv.dilate(
+        src=canny_image,
+        kernel=np.ones((5, 5), np.uint8),
+        iterations=2
+    )
+
+    canny_image = cv.morphologyEx(
+        src=canny_image,
+        op=cv.MORPH_CLOSE,
+        kernel=np.ones((5, 5), np.uint8),
+        iterations=2
+    )
+    return canny_image
 
 def find_windowpane(path: Path) -> np.ndarray:
     """Finds window.
@@ -39,40 +59,29 @@ def find_windowpane(path: Path) -> np.ndarray:
     image = cv.imread(path, cv.IMREAD_COLOR_RGB)
     grayscale_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
 
-    canny_image = cv.Canny(
-        image       =grayscale_image, 
-        threshold1  =200, 
-        threshold2  =255
-        )
-    
-    canny_image = cv.dilate(
-        src         =canny_image, 
-        kernel      =np.ones((5, 5), np.uint8), 
-        iterations  =2
-        )
-    
-    canny_image = cv.morphologyEx(
-        src         =canny_image, 
-        op          =cv.MORPH_CLOSE, 
-        kernel      =np.ones((5, 5), np.uint8), 
-        iterations  =2
-        )
-
+    # Apply Canny Pass
+    canny_image = apply_canny(grayscale_image)
     cv.imwrite("canny.jpg", canny_image)
 
-    dog_pass_1 = apply_dog(image=grayscale_image, sigma1=5.0, sigma2=6.0)
-    dog_pass_2 = apply_dog(image=grayscale_image, sigma1=25.0, sigma2=26.0)
+    # Apply 2 DoG passes to find well and poorly defined edges
+    dog_pass_1 = apply_dog(image=grayscale_image, sigma1=4.0, sigma2=7.0)
+    dog_pass_2 = apply_dog(image=grayscale_image, sigma1=20.0, sigma2=25.0)
 
     cv.imwrite("dog1.jpg", dog_pass_1)
     cv.imwrite("dog2.jpg", dog_pass_2)
 
-    super_dog = apply_dog(image=bitwise_and(dog_pass_1, dog_pass_2), sigma1=10.0, sigma2=11.0)
-    dog_image = cv.threshold(bitwise_and(dog_pass_1, dog_pass_2), 1, 255, cv.THRESH_BINARY)[1]
-    cv.imwrite("super_dog.jpg", super_dog)
+    # Combine DoG passes by weighted sum, blur to cull noise,
+    # apply another DoG pass and crush to black and white with ostu threshold
+    dog_combined = cv.addWeighted(dog_pass_1, 0.6, dog_pass_2, 0.4, 0)
+    dog_combined = apply_dog(dog_combined, sigma1=10.0, sigma2=13.0)
+    dog_combined = cv.blur(dog_combined, (10, 10))
+    _, dog_final = cv.threshold(dog_combined, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
 
-    cv.imwrite("dog.jpg", dog_image)
+    cv.imwrite("dog_combined.jpg", dog_combined)
+    cv.imwrite("dog.jpg", dog_final)
 
-    combined_image = cv.bitwise_and(dog_image, canny_image)
+    # Combine DoG with canny by using it as a mask
+    combined_image = cv.bitwise_and(dog_final, canny_image)
     cv.imwrite("combined.jpg", combined_image)
 
     height, width = grayscale_image.shape
