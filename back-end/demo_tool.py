@@ -9,8 +9,6 @@ import numpy as np
 import sys
 from pathlib import Path
 
-from numpy.ma.core import bitwise_and
-from numpy.ma.extras import average
 
 MARKER_LENGTH_MM = 100
 MM_IN_RATIO = 25.4
@@ -27,7 +25,6 @@ def apply_dog(image: np.ndarray, sigma1=1.0, sigma2=2.0) -> np.ndarray:
     return dog
 
 def apply_canny(image: np.ndarray):
-
 
     # Use Otsu's method to find threshold for canny detection
     thresh, otsu_thresh = cv.threshold(image, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
