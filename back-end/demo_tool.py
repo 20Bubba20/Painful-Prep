@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 from numpy.ma.core import bitwise_and
+from numpy.ma.extras import average
 
 MARKER_LENGTH_MM = 100
 MM_IN_RATIO = 25.4
@@ -27,10 +28,14 @@ def apply_dog(image: np.ndarray, sigma1=1.0, sigma2=2.0) -> np.ndarray:
 
 def apply_canny(image: np.ndarray):
 
+
+    # Use Otsu's method to find threshold for canny detection
+    thresh, otsu_thresh = cv.threshold(image, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+
     canny_image = cv.Canny(
         image=image,
-        threshold1=200,
-        threshold2=255
+        threshold1=thresh,
+        threshold2=thresh*1.5
     )
 
     canny_image = cv.dilate(
@@ -61,28 +66,31 @@ def find_windowpane(path: Path) -> np.ndarray:
 
     # Apply Canny Pass
     canny_image = apply_canny(grayscale_image)
-    cv.imwrite("canny.jpg", canny_image)
 
     # Apply 2 DoG passes to find well and poorly defined edges
     dog_pass_1 = apply_dog(image=grayscale_image, sigma1=4.0, sigma2=7.0)
     dog_pass_2 = apply_dog(image=grayscale_image, sigma1=20.0, sigma2=25.0)
 
-    cv.imwrite("dog1.jpg", dog_pass_1)
-    cv.imwrite("dog2.jpg", dog_pass_2)
-
-    # Combine DoG passes by weighted sum, blur to cull noise,
+    # Combine DoG passes by weighted sum, blur to cull noise and artifacts,
     # apply another DoG pass and crush to black and white with ostu threshold
     dog_combined = cv.addWeighted(dog_pass_1, 0.6, dog_pass_2, 0.4, 0)
     dog_combined = apply_dog(dog_combined, sigma1=10.0, sigma2=13.0)
     dog_combined = cv.blur(dog_combined, (10, 10))
     _, dog_final = cv.threshold(dog_combined, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
 
-    cv.imwrite("dog_combined.jpg", dog_combined)
-    cv.imwrite("dog.jpg", dog_final)
+    # Dilate B/W DoG output for masking
+    dog_final = cv.dilate(dog_final, kernel=np.ones((5, 5), np.uint8), iterations=3)
 
     # Combine DoG with canny by using it as a mask
-    combined_image = cv.bitwise_and(dog_final, canny_image)
-    cv.imwrite("combined.jpg", combined_image)
+    combined_image = cv.bitwise_and(canny_image, dog_final)
+
+    # Output every pass in order
+    cv.imwrite("1_canny.jpg", canny_image)
+    cv.imwrite("2_dog1.jpg", dog_pass_1)
+    cv.imwrite("3_dog2.jpg", dog_pass_2)
+    cv.imwrite("4_dog_combined.jpg", dog_combined)
+    cv.imwrite("5_dog_final.jpg", dog_final)
+    cv.imwrite("6_combined.jpg", combined_image)
 
     height, width = grayscale_image.shape
     lines_image = np.zeros(
