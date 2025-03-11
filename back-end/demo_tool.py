@@ -43,7 +43,8 @@ def find_windowpane(path: Path) -> np.ndarray:
         iterations  =2
         )
 
-    cv.imwrite("canny.jpg", canny_image)
+    if __name__ == "__main__":
+        cv.imwrite("canny.jpg", canny_image)
 
     height, width = grayscale_image.shape
     lines_image = np.zeros(
@@ -77,7 +78,8 @@ def find_windowpane(path: Path) -> np.ndarray:
         iterations  =2
     )
     
-    cv.imwrite("lines_image.jpg", lines_image)
+    if __name__ == "__main__":
+        cv.imwrite("lines_image.jpg", lines_image)
     
     contours, _ = cv.findContours(
         image   =lines_image, 
@@ -114,7 +116,8 @@ def find_windowpane(path: Path) -> np.ndarray:
                 thickness   =10
             )
     
-    cv.imwrite("contours.jpg", image)
+    if __name__ == "__main__":
+        cv.imwrite("contours.jpg", image)
 
     return window_candidate
 
