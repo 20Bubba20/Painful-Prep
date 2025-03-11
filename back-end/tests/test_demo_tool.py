@@ -5,7 +5,7 @@ import demo_tool
 
 @pytest.mark.parametrize(("filepath", "exp_width", "exp_height"), 
     [
-        ("/home/tminnich/projects/capstone/Painful-Prep/back-end/tests/test-images/img_002.JPG", 6, 12)
+        ("/home/tminnich/projects/capstone/Painful-Prep/back-end/tests/test-images/img_002.JPG", 6.25, 12)
     ]
 )
 def test_demo_tool(filepath, exp_width, exp_height):
@@ -21,7 +21,15 @@ def test_demo_tool(filepath, exp_width, exp_height):
         for j, val in enumerate(coordinate[0]):
             assert isinstance(val, np.int32), f"Expected val {j} to be of type int, got {type(val)}"
     
-    actual_width, actual_height = demo_tool.get_window_dimensions(filepath, corners_array)
+    actual_height, actual_width = demo_tool.get_window_dimensions(filepath, corners_array)
 
     assert isinstance(actual_width, (int, float)), f"Expected the width to be int or float, got {type(actual_width)}"
     assert isinstance(actual_height, (int, float)), f"Expected the width to be int or float, got {type(actual_height)}"
+
+    print(actual_height, actual_width)
+
+    w_err = abs((actual_width - exp_width) / exp_width)
+    h_err = abs((actual_height - exp_height) / exp_height)
+
+    assert w_err < 0.2, f"Expected width percent error less than 20%, got {(w_err * 100):.0f}%"
+    assert h_err < 0.2, f"Expected height percent error less than 20%, got {(w_err * 100):.0f}%"
