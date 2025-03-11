@@ -5,7 +5,7 @@ import demo_tool
 
 @pytest.mark.parametrize(("filepath", "exp_width", "exp_height"), 
     [
-        ("/home/tminnich/projects/capstone/Painful-Prep/back-end/tests/test-images/img_002.JPG", 6.25, 12)
+        ("tests/test-images/img_002.JPG", 6.25, 12)
     ]
 )
 def test_demo_tool(filepath, exp_width, exp_height):
