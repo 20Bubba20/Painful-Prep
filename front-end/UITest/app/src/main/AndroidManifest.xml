@@ -18,12 +18,7 @@
             android:label="@string/title_activity_dimensions"
             android:theme="@style/Theme.UITest" />
         <activity
-            android:name=".ui.theme.Dimensions"
-            android:exported="false"
-            android:label="@string/title_activity_dimensions"
-            android:theme="@style/Theme.UITest" />
-        <activity
-            android:name=".takePicture"
+            android:name=".TakePicture"
             android:exported="false"
             android:label="@string/title_activity_take_picture"
             android:theme="@style/Theme.UITest" />
