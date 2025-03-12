@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools" >
 
     <application
         android:allowBackup="true"
@@ -11,12 +11,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UITest"
-        tools:targetApi="31">
+        tools:targetApi="31" >
+        <activity
+            android:name=".dimensions"
+            android:exported="false"
+            android:label="@string/title_activity_dimensions"
+            android:theme="@style/Theme.UITest" />
+        <activity
+            android:name=".ui.theme.Dimensions"
+            android:exported="false"
+            android:label="@string/title_activity_dimensions"
+            android:theme="@style/Theme.UITest" />
+        <activity
+            android:name=".takePicture"
+            android:exported="false"
+            android:label="@string/title_activity_take_picture"
+            android:theme="@style/Theme.UITest" />
+        <activity
+            android:name=".ImportPicture"
+            android:exported="false"
+            android:label="@string/title_activity_import_picture"
+            android:theme="@style/Theme.UITest" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.UITest">
+            android:theme="@style/Theme.UITest" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

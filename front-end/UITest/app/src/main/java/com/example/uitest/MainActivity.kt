@@ -1,53 +1,35 @@
 package com.example.uitest
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.uitest.ui.theme.UITestTheme
 import android.widget.Button
-import android.widget.Toast
-//import androidx.appcompat.app.AppCompatActivity
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
-        setContentView(R.layout.layout)
-        val takePicture: Button = findViewById(R.id.takePicture)
 
+        /* Set layout to index page */
+        setContentView(R.layout.index)
+
+        /* Assign Buttons values */
+        val takePicture: Button = findViewById(R.id.TakePicture)
+        val uploadPicture: Button = findViewById(R.id.uploadPicture)
+
+        /* When the takePicture button is clicked, move to the take picture screen */
         takePicture.setOnClickListener {
-            Toast.makeText(this, "Button Clicked", Toast.LENGTH_LONG).show()
+            //Toast.makeText(this, "Button Clicked", Toast.LENGTH_LONG).show()
+            val intent: Intent = Intent(this, TakePicture::class.java)
+            startActivity(intent)
+        }
+        /* When the uploadPicture button is clicked, move to the take picture screen */
+        uploadPicture.setOnClickListener {
+            val intent: Intent = Intent(this, ImportPicture::class.java)
+            startActivity(intent)
         }
 
-        /*setContent {
-            UITestTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Jerron",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
-        }*/
     }
+
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    UITestTheme {
-        Greeting("Android")
-    }
-}
