@@ -44,7 +44,7 @@ To use the `two_marker_detect` tool, follow the below steps:
 
 Code Milestone 1: The current prototype correctly detects edges of windowpanes in ideal conditions and calculates window dimensions. It is currently a command line tool. 
 
-Code Milestone 2: `two_marker_detect` demonstrates improved reliability and accuracy over the `demo_tool`.
+Code Milestone 2: `two_marker_detect` demonstrates improved reliability and accuracy over the `demo_tool`. On branch `Jerron_Branch`, a mobile application is being developed to take pictures, it currently has UI components.
 
 ## Contributing
 
