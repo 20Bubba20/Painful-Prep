@@ -21,6 +21,7 @@ class ImportPicture : ComponentActivity() {
         /* Set layout to index page */
         setContentView(R.layout.importpicturepage)
         val toHome: Button = findViewById(R.id.index)
+        /* TODO: Everything */
         /* Assign Buttons values */
         //val takePicture: Button = findViewById(R.id.__)
         //val uploadPicture: Button = findViewById(R.id.__)

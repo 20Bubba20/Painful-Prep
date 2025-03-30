@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">UITest</string>
+    <string name="app_name">Painless Prep App</string>
     <string name="title_activity_import_picture">ImportPicture</string>
     <string name="title_activity_take_picture">takePicture</string>
     <string name="title_activity_dimensions">Dimensions</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="to_index">Home</string>
 </resources>
