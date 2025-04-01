@@ -1,10 +1,14 @@
 """
-Gets dimensions of window in image that has two markers in opposing corners.
+@file two_marker_detect.py
+@brief Gets dimensions of a window in an image containing two markers in opposing corners.
 
-Marker size must be provided in millimeters (mm).
+This script detects two ArUco markers in an image and calculates the width and height 
+of a window using the known size of the markers.
 
 Usage:
     python two_marker_detect.py <filepath> <marker_size>
+
+@note The marker size must be provided in millimeters (mm).
 """
 
 import cv2 as cv
@@ -15,14 +19,17 @@ from pathlib import Path
 from demo_tool import MM_IN_RATIO
 
 def calculate_two_markers(path: Path, marker_size_mm: int) -> tuple[int, int]:
-    """Finds width and height of window that has ArUco markers in opposing corners.
+    """
+    @brief Finds the width and height of a window using two ArUco markers.
 
-    Args:
-        path (Path): Relative or absolute filepath to image.
-        marker_size_mm (int): Size of marker used in mm. Must be a whole number.
+    This function detects exactly two ArUco markers in an image, computes the scale 
+    based on their known size, and calculates the dimensions of the window in inches.
 
-    Returns:
-        tuple (int, int): Returns the width and height of the window in inches.
+    @param path Path to the image file.
+    @param marker_size_mm Known size of the marker in millimeters.
+
+    @return Tuple (width, height) of the window in inches. Returns None if the number 
+            of markers detected is not exactly two.
     """
     image = cv.imread(path, cv.IMREAD_COLOR_RGB)
 
@@ -94,6 +101,16 @@ def calculate_two_markers(path: Path, marker_size_mm: int) -> tuple[int, int]:
     return h_in, w_in
 
 def get_scale(corners: np.ndarray) -> float:
+    """
+    @brief Computes the pixel scale from an ArUco marker.
+
+    Given the four corners of a detected marker, this function calculates the 
+    average length of its sides, which is used to determine the scale.
+
+    @param corners A 4x2 NumPy array containing the corner coordinates of a marker.
+
+    @return The average pixel length of the marker's sides.
+    """
     displ_0 = corners[0] - corners[1]
     displ_1 = corners[1] - corners[2]
     displ_2 = corners[2] - corners[3]
@@ -111,6 +128,13 @@ def get_scale(corners: np.ndarray) -> float:
     return scale
 
 if __name__ == "__main__":
+    """
+    @brief Main execution point for the script.
+
+    This script takes an image file path and a marker size in mm as input, 
+    processes the image to find two ArUco markers, and calculates the 
+    window dimensions in inches.
+    """
     if len(sys.argv) != 3:
         print(__doc__)
         exit()
