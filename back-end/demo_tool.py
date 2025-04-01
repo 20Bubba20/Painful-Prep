@@ -1,5 +1,6 @@
-"""
-Gets dimensions for window in picture file.
+"""""
+@file demo_tool.py
+@brief Gets dimensions for window in a picture file.
 
 Usage: python demo_tool.py <file_path>
 """
@@ -13,13 +14,11 @@ MARKER_LENGTH_MM = 100
 MM_IN_RATIO = 25.4
 
 def find_windowpane(path: Path) -> np.ndarray:
-    """Finds window.
-
-    Args:
-        path (pathlib.Path): File path to picture containing window.
-
-    Returns:
-        numpy.ndarray: Coordinates of corners of window.
+    """
+    @brief Finds the window in an image.
+    
+    @param path File path to picture containing the window.
+    @return Coordinates of corners of the detected window as a numpy.ndarray.
     """
     image = cv.imread(path, cv.IMREAD_COLOR_RGB)
     grayscale_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
@@ -122,14 +121,12 @@ def find_windowpane(path: Path) -> np.ndarray:
     return window_candidate
 
 def get_window_dimensions(path: str, quadrilateral: np.ndarray) -> tuple:
-    """Finds window dimensions.
-
-    Args:
-        path (pathlib.Path): File path to picture containing window.
-        quadrilateral (numpy.ndarray): Array object containing corner coordinates of window.
-
-    Returns:
-        tuple: Width and height of window in inches in that order.
+    """
+    @brief Computes the width and height of a detected window.
+    
+    @param path File path to the image containing the window.
+    @param quadrilateral Coordinates of the detected window corners.
+    @return Tuple containing the width and height of the window in inches.
     """
     image = cv.imread(path, cv.IMREAD_GRAYSCALE)
 
