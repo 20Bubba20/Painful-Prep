@@ -33,8 +33,8 @@ def calculate_two_markers(path: Path, marker_size_mm: int) -> tuple[int, int]:
         )
 
     # Exit if there are too few or too many markers.
-    if len(ids) != 2:
-        return None
+    if ids is None or len(ids) != 2:
+        return None, None
     
     # Get the average scale.
     scale_px = (get_scale(corners[0][0]) + get_scale(corners[1][0])) / 2
