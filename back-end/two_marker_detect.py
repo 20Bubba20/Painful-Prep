@@ -121,7 +121,22 @@ def get_scale(corners: np.ndarray) -> float:
 
     return scale
 
-def get_diff_two_markers_px(coords: list[int], diagonal: Literal["TLBR", "TRBL"] = "TLBR") -> tuple[int, int, int, int]:
+def get_diff_two_markers_px(coords: list[tuple[int, int]], diagonal: Literal["TLBR", "TRBL"] = "TLBR") -> tuple[int, int, int, int]:
+    """
+    @brief Finds the coordinates of the diagonal of a window.
+
+    This function figures out the x and y coordinates of the two opposing corners of a window
+    based on the placement of the two ArUco markers in those corners. 
+
+    @param coords List of coordinate pairs in order x, y
+    @param diagonal Literal that indicates marker placement. TLBR indicates that one marker was 
+           placed in the top left corner of the window and the other in the bottom right. TRBL
+           indicates that one marker was placed in the top right corner and the other in the
+           bottom left corner. 
+
+    @return Returns a four-tuple of integer values. The values are returned in this order: 
+            Top x coordinate, top y coordinate, bottom x coordinate, bottom y coordinate.
+    """
     # More or less than two markers is not valid.
     if len(coords) != 8:
         return None
