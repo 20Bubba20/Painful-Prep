@@ -104,32 +104,33 @@ def get_diff_two_markers_px(coords: list[int], diagonal: Literal["TLBR", "TRBL"]
     # More or less than two markers is not valid.
     if len(coords) != 8:
         return None
-    elif diagonal == "TLBR":
-        # Isolate just the y coordinates.
-        y_coords = [coord[1] for coord in coords]
-        y_coords_tmp = y_coords.copy()
+    
+    # Isolate just the y coordinates.
+    y_coords = [coord[1] for coord in coords]
+    y_coords_tmp = y_coords.copy()
 
-        # Find the two highest vectors.
-        y_1 = min(y_coords_tmp)
-        y_1_idx = y_coords.index(y_1)
-        y_coords_tmp.remove(y_1)
+    # Find the two highest vectors.
+    y_1 = min(y_coords_tmp)
+    y_1_idx = y_coords.index(y_1)
+    y_coords_tmp.remove(y_1)
 
-        y_2 = min(y_coords_tmp)
-        y_2_idx = y_coords.index(y_2)
+    y_2 = min(y_coords_tmp)
+    y_2_idx = y_coords.index(y_2)
 
+    # Find the bottom most two vectors.
+    y_3 = max(y_coords_tmp)
+    y_3_idx = y_coords.index(y_3)
+    y_coords_tmp.remove(y_3)
+
+    y_4 = max(y_coords_tmp)
+    y_4_idx = y_coords.index(y_4)
+
+    if diagonal == "TLBR":
         # Find the top left most vector.
         if coords[y_1_idx][0] < coords[y_2_idx][0]:
             tl_coord_x, tl_coord_y = coords[y_1_idx]
         else:
             tl_coord_x, tl_coord_y = coords[y_2_idx]
-
-        # Find the bottom most two vectors.
-        y_3 = max(y_coords_tmp)
-        y_3_idx = y_coords.index(y_3)
-        y_coords_tmp.remove(y_3)
-
-        y_4 = max(y_coords_tmp)
-        y_4_idx = y_coords.index(y_4)
 
         # Check which one is the bottom right vector.
         if coords[y_3_idx][0] > coords[y_4_idx][0]:
@@ -140,7 +141,19 @@ def get_diff_two_markers_px(coords: list[int], diagonal: Literal["TLBR", "TRBL"]
         return tl_coord_x, tl_coord_y, br_coord_x, br_coord_y
     
     elif diagonal == "TRBL":
-        pass
+        # Find the top right most vector.
+        if coords[y_1_idx][0] > coords[y_2_idx][0]:
+            tr_coord_x, tr_coord_y = coords[y_1_idx]
+        else:
+            tr_coord_x, tr_coord_y = coords[y_2_idx]
+
+        # Check which one is the bottom left most vector.
+        if coords[y_3_idx][0] < coords[y_4_idx][0]:
+            bl_coord_x, bl_coord_y = coords[y_3_idx]
+        else:
+            bl_coord_x, bl_coord_y = coords[y_4_idx]
+
+        return tr_coord_x, tr_coord_y, bl_coord_x, bl_coord_y
     else:
         return None
 
