@@ -54,7 +54,7 @@ def calculate_two_markers(path: Path, marker_size_mm: int) -> tuple[int, int]:
 
     # Find which marker is the top marker. OpenCV image
     # coordinate origin (0, 0) is the top left corner of images. 
-    if corners[0][0][1] < corners[1][0][1]:
+    if corners[0][0][0] < corners[1][0][0]:
         top_marker_coords = corners[0]
         bottom_marker_coords = corners[1] 
     else:
