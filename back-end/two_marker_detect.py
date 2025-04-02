@@ -52,19 +52,40 @@ def calculate_two_markers(path: Path, marker_size_mm: int) -> tuple[int, int]:
     corners = [[[round(x) for x in row] for row in marker] for marker in corners]
     corner_coords = np.concatenate(corners)
 
-    tl_coord_x, tl_coord_y, br_coord_x, br_coord_y = get_diff_two_markers_px(corner_coords, "TLBR")
+    # Find which marker is the top marker. OpenCV image
+    # coordinate origin (0, 0) is the top left corner of images. 
+    if corners[0][0][1] < corners[1][0][1]:
+        top_marker_coords = corners[0]
+        bottom_marker_coords = corners[1] 
+    else:
+        top_marker_coords = corners[1]
+        bottom_marker_coords = corners[0]
+    
+    is_top_marker_left = top_marker_coords[0][1] < bottom_marker_coords[0][1]
+
+    # Use this for verbose debugging:
+    # if __debug__:
+    #     print(f"coords: {corners}\n")
+    #     print(f"top marker: {top_marker_coords}\n")
+    #     print(f"Is top marker left? {is_top_marker_left} because:")
+    #     print(f"{top_marker_coords[0][1]} < {bottom_marker_coords[0][1]}")
+
+    # Top left, bottom right diagonal case.
+    if is_top_marker_left:
+        t_coord_x, t_coord_y, b_coord_x, b_coord_y = get_diff_two_markers_px(corner_coords, "TLBR")
+    # Top right, bottom left diagonal case.
+    else:
+        t_coord_x, t_coord_y, b_coord_x, b_coord_y = get_diff_two_markers_px(corner_coords, "TRBL")
     
     # Get width and height in pixels.
-    h_px = abs(tl_coord_x - br_coord_x)
-    w_px = abs(tl_coord_y - br_coord_y)
-
-    corner_img = cv.circle(image, (tl_coord_x, tl_coord_y), 5, (0, 255, 0), 5)
-    corner_img = cv.circle(image, (br_coord_x, br_coord_y), 5, (0, 255, 0), 5)
-    cv.imwrite("corners.jpg", corner_img)
+    h_px = abs(t_coord_x - b_coord_x)
+    w_px = abs(t_coord_y - b_coord_y)
 
     if __debug__:
-        pass
-    
+        corner_img = cv.circle(image, (t_coord_x, t_coord_y), 5, (0, 255, 0), 5)
+        corner_img = cv.circle(image, (b_coord_x, b_coord_y), 5, (0, 255, 0), 5)
+        cv.imwrite("corners.jpg", corner_img)
+
     # Convert width and height to inches.
     scale_mm = marker_size_mm / scale_px
 
