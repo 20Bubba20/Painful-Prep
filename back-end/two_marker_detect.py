@@ -15,6 +15,7 @@ import cv2 as cv
 import numpy as np
 import sys
 from pathlib import Path
+from typing import Literal
 
 from demo_tool import MM_IN_RATIO
 
@@ -51,46 +52,18 @@ def calculate_two_markers(path: Path, marker_size_mm: int) -> tuple[int, int]:
     corners = [[[round(x) for x in row] for row in marker] for marker in corners]
     corner_coords = np.concatenate(corners)
 
-    # Isolate just the y coordinates.
-    y_coords = [coord[1] for coord in corner_coords]
-    y_coords_tmp = y_coords.copy()
-
-    # Find the two highest vectors.
-    y_1 = min(y_coords_tmp)
-    y_1_idx = y_coords.index(y_1)
-    y_coords_tmp.remove(y_1)
-
-    y_2 = min(y_coords_tmp)
-    y_2_idx = y_coords.index(y_2)
-
-    # Find the top left most vector.
-    if corner_coords[y_1_idx][0] < corner_coords[y_2_idx][0]:
-        tl_coord = corner_coords[y_1_idx]
-    else:
-        tl_coord = corner_coords[y_2_idx]
-
-    # Find the bottom most two vectors.
-    y_3 = max(y_coords_tmp)
-    y_3_idx = y_coords.index(y_3)
-    y_coords_tmp.remove(y_3)
-
-    y_4 = max(y_coords_tmp)
-    y_4_idx = y_coords.index(y_4)
-
-    # Check which one is the bottom right vector.
-    if corner_coords[y_3_idx][0] > corner_coords[y_4_idx][0]:
-        br_coord = corner_coords[y_3_idx]
-    else:
-        br_coord = corner_coords[y_4_idx]
-
+    tl_coord_x, tl_coord_y, br_coord_x, br_coord_y = get_diff_two_markers_px(corner_coords, "TLBR")
+    
     # Get width and height in pixels.
-    h_px = abs(tl_coord[0] - br_coord[0])
-    w_px = abs(tl_coord[1] - br_coord[1])
+    h_px = abs(tl_coord_x - br_coord_x)
+    w_px = abs(tl_coord_y - br_coord_y)
+
+    corner_img = cv.circle(image, (tl_coord_x, tl_coord_y), 5, (0, 255, 0), 5)
+    corner_img = cv.circle(image, (br_coord_x, br_coord_y), 5, (0, 255, 0), 5)
+    cv.imwrite("corners.jpg", corner_img)
 
     if __debug__:
-        corner_img = cv.circle(image, tl_coord, 5, (0, 255, 0), 5)
-        corner_img = cv.circle(image, br_coord, 5, (0, 255, 0), 5)
-        cv.imwrite("corners.jpg", corner_img)
+        pass
     
     # Convert width and height to inches.
     scale_mm = marker_size_mm / scale_px
@@ -126,6 +99,50 @@ def get_scale(corners: np.ndarray) -> float:
     scale = np.average(norms)
 
     return scale
+
+def get_diff_two_markers_px(coords: list[int], diagonal: Literal["TLBR", "TRBL"] = "TLBR") -> tuple[int, int, int, int]:
+    # More or less than two markers is not valid.
+    if len(coords) != 8:
+        return None
+    elif diagonal == "TLBR":
+        # Isolate just the y coordinates.
+        y_coords = [coord[1] for coord in coords]
+        y_coords_tmp = y_coords.copy()
+
+        # Find the two highest vectors.
+        y_1 = min(y_coords_tmp)
+        y_1_idx = y_coords.index(y_1)
+        y_coords_tmp.remove(y_1)
+
+        y_2 = min(y_coords_tmp)
+        y_2_idx = y_coords.index(y_2)
+
+        # Find the top left most vector.
+        if coords[y_1_idx][0] < coords[y_2_idx][0]:
+            tl_coord_x, tl_coord_y = coords[y_1_idx]
+        else:
+            tl_coord_x, tl_coord_y = coords[y_2_idx]
+
+        # Find the bottom most two vectors.
+        y_3 = max(y_coords_tmp)
+        y_3_idx = y_coords.index(y_3)
+        y_coords_tmp.remove(y_3)
+
+        y_4 = max(y_coords_tmp)
+        y_4_idx = y_coords.index(y_4)
+
+        # Check which one is the bottom right vector.
+        if coords[y_3_idx][0] > coords[y_4_idx][0]:
+            br_coord_x, br_coord_y = coords[y_3_idx]
+        else:
+            br_coord_x, br_coord_y = coords[y_4_idx]
+
+        return tl_coord_x, tl_coord_y, br_coord_x, br_coord_y
+    
+    elif diagonal == "TRBL":
+        pass
+    else:
+        return None
 
 if __name__ == "__main__":
     """
