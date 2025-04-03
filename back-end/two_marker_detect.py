@@ -15,6 +15,7 @@ import cv2 as cv
 import numpy as np
 import sys
 from pathlib import Path
+from typing import Literal
 
 from demo_tool import MM_IN_RATIO
 
@@ -51,47 +52,40 @@ def calculate_two_markers(path: Path, marker_size_mm: int) -> tuple[int, int]:
     corners = [[[round(x) for x in row] for row in marker] for marker in corners]
     corner_coords = np.concatenate(corners)
 
-    # Isolate just the y coordinates.
-    y_coords = [coord[1] for coord in corner_coords]
-    y_coords_tmp = y_coords.copy()
-
-    # Find the two highest vectors.
-    y_1 = min(y_coords_tmp)
-    y_1_idx = y_coords.index(y_1)
-    y_coords_tmp.remove(y_1)
-
-    y_2 = min(y_coords_tmp)
-    y_2_idx = y_coords.index(y_2)
-
-    # Find the top left most vector.
-    if corner_coords[y_1_idx][0] < corner_coords[y_2_idx][0]:
-        tl_coord = corner_coords[y_1_idx]
+    # Find which marker is the top marker. OpenCV image
+    # coordinate origin (0, 0) is the top left corner of images. 
+    if corners[0][0][0] < corners[1][0][0]:
+        top_marker_coords = corners[0]
+        bottom_marker_coords = corners[1] 
     else:
-        tl_coord = corner_coords[y_2_idx]
+        top_marker_coords = corners[1]
+        bottom_marker_coords = corners[0]
+    
+    is_top_marker_left = top_marker_coords[0][1] < bottom_marker_coords[0][1]
 
-    # Find the bottom most two vectors.
-    y_3 = max(y_coords_tmp)
-    y_3_idx = y_coords.index(y_3)
-    y_coords_tmp.remove(y_3)
+    # Use this for verbose debugging:
+    # if __debug__:
+    #     print(f"coords: {corners}\n")
+    #     print(f"top marker: {top_marker_coords}\n")
+    #     print(f"Is top marker left? {is_top_marker_left} because:")
+    #     print(f"{top_marker_coords[0][1]} < {bottom_marker_coords[0][1]}")
 
-    y_4 = max(y_coords_tmp)
-    y_4_idx = y_coords.index(y_4)
-
-    # Check which one is the bottom right vector.
-    if corner_coords[y_3_idx][0] > corner_coords[y_4_idx][0]:
-        br_coord = corner_coords[y_3_idx]
+    # Top left, bottom right diagonal case.
+    if is_top_marker_left:
+        t_coord_x, t_coord_y, b_coord_x, b_coord_y = get_diff_two_markers_px(corner_coords, "TLBR")
+    # Top right, bottom left diagonal case.
     else:
-        br_coord = corner_coords[y_4_idx]
-
+        t_coord_x, t_coord_y, b_coord_x, b_coord_y = get_diff_two_markers_px(corner_coords, "TRBL")
+    
     # Get width and height in pixels.
-    h_px = abs(tl_coord[0] - br_coord[0])
-    w_px = abs(tl_coord[1] - br_coord[1])
+    h_px = abs(t_coord_x - b_coord_x)
+    w_px = abs(t_coord_y - b_coord_y)
 
     if __debug__:
-        corner_img = cv.circle(image, tl_coord, 5, (0, 255, 0), 5)
-        corner_img = cv.circle(image, br_coord, 5, (0, 255, 0), 5)
+        corner_img = cv.circle(image, (t_coord_x, t_coord_y), 5, (0, 255, 0), 5)
+        corner_img = cv.circle(image, (b_coord_x, b_coord_y), 5, (0, 255, 0), 5)
         cv.imwrite("corners.jpg", corner_img)
-    
+
     # Convert width and height to inches.
     scale_mm = marker_size_mm / scale_px
 
@@ -126,6 +120,78 @@ def get_scale(corners: np.ndarray) -> float:
     scale = np.average(norms)
 
     return scale
+
+def get_diff_two_markers_px(coords: list[tuple[int, int]], diagonal: Literal["TLBR", "TRBL"] = "TLBR") -> tuple[int, int, int, int]:
+    """
+    @brief Finds the coordinates of the diagonal of a window.
+
+    This function figures out the x and y coordinates of the two opposing corners of a window
+    based on the placement of the two ArUco markers in those corners. 
+
+    @param coords List of coordinate pairs in order x, y
+    @param diagonal Literal that indicates marker placement. TLBR indicates that one marker was 
+           placed in the top left corner of the window and the other in the bottom right. TRBL
+           indicates that one marker was placed in the top right corner and the other in the
+           bottom left corner. 
+
+    @return Returns a four-tuple of integer values. The values are returned in this order: 
+            Top x coordinate, top y coordinate, bottom x coordinate, bottom y coordinate.
+    """
+    # More or less than two markers is not valid.
+    if len(coords) != 8:
+        return None
+    
+    # Isolate just the y coordinates.
+    y_coords = [coord[1] for coord in coords]
+    y_coords_tmp = y_coords.copy()
+
+    # Find the two highest vectors.
+    y_1 = min(y_coords_tmp)
+    y_1_idx = y_coords.index(y_1)
+    y_coords_tmp.remove(y_1)
+
+    y_2 = min(y_coords_tmp)
+    y_2_idx = y_coords.index(y_2)
+
+    # Find the bottom most two vectors.
+    y_3 = max(y_coords_tmp)
+    y_3_idx = y_coords.index(y_3)
+    y_coords_tmp.remove(y_3)
+
+    y_4 = max(y_coords_tmp)
+    y_4_idx = y_coords.index(y_4)
+
+    if diagonal == "TLBR":
+        # Find the top left most vector.
+        if coords[y_1_idx][0] < coords[y_2_idx][0]:
+            tl_coord_x, tl_coord_y = coords[y_1_idx]
+        else:
+            tl_coord_x, tl_coord_y = coords[y_2_idx]
+
+        # Check which one is the bottom right vector.
+        if coords[y_3_idx][0] > coords[y_4_idx][0]:
+            br_coord_x, br_coord_y = coords[y_3_idx]
+        else:
+            br_coord_x, br_coord_y = coords[y_4_idx]
+
+        return tl_coord_x, tl_coord_y, br_coord_x, br_coord_y
+    
+    elif diagonal == "TRBL":
+        # Find the top right most vector.
+        if coords[y_1_idx][0] > coords[y_2_idx][0]:
+            tr_coord_x, tr_coord_y = coords[y_1_idx]
+        else:
+            tr_coord_x, tr_coord_y = coords[y_2_idx]
+
+        # Check which one is the bottom left most vector.
+        if coords[y_3_idx][0] < coords[y_4_idx][0]:
+            bl_coord_x, bl_coord_y = coords[y_3_idx]
+        else:
+            bl_coord_x, bl_coord_y = coords[y_4_idx]
+
+        return tr_coord_x, tr_coord_y, bl_coord_x, bl_coord_y
+    else:
+        return None
 
 if __name__ == "__main__":
     """
