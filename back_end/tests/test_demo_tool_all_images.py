@@ -18,8 +18,8 @@ with open(data_csv, newline='') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         expected_data[row["id"]] = {
-            'width': float(row["window_width"]),
-            'height': float(row["window_height"])
+            'width': round(float(row["window_width"])),
+            'height': round(float(row["window_height"]))
         }
 
 # creating the results list to be put into the csv file later
@@ -64,7 +64,10 @@ for filename in os.listdir(test_images):
                 corners_array = demo_tool.find_windowpane(img_path)
 
                 #gets height and width form demo_tool calculation
-                actual_height, actual_width = demo_tool.get_window_dimensions(img_path, corners_array)
+                raw_height, raw_width = demo_tool.get_window_dimensions(img_path, corners_array)
+
+                actual_height = round(raw_height, 2)
+                actual_width = round(raw_width, 2)
 
                 # finds the expected width and height from data.csv
                 expected_width = expected_data[img_id]['width']
@@ -76,7 +79,7 @@ for filename in os.listdir(test_images):
                 avg_error = (w_err + h_err) / 2
 
                 #generates the accuracy of the window detection
-                accuracy = 1 - avg_error
+                accuracy = round(1 - avg_error, 2)
 
                 # appends results to the list
                 results.append([img_id, actual_width, actual_height, expected_width, expected_height, accuracy])
@@ -92,7 +95,10 @@ for filename in os.listdir(test_images):
                             break
 
                 # calculates the actual height and width using two_marker_detect
-                actual_height, actual_width = two_marker_detect.calculate_two_markers(img_path, marker_size)
+                raw_height, raw_width = two_marker_detect.calculate_two_markers(img_path, marker_size)
+
+                actual_height = round(raw_height, 2)
+                actual_width = round(raw_width, 2)
 
                 # checks if the actual height and width are None (if the image is not detected)
                 if actual_height is None or actual_width is None:
@@ -109,7 +115,7 @@ for filename in os.listdir(test_images):
                 avg_error = (w_err + h_err) / 2
 
                 #generates the accuracy of the window detection
-                accuracy = 1 - avg_error
+                accuracy = round(1 - avg_error, 2)
 
                 # appends results to the list
                 results.append([img_id, actual_width, actual_height, expected_width, expected_height, accuracy])
