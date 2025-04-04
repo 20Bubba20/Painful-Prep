@@ -1,8 +1,7 @@
 package com.example.uitest
 
-import android.Manifest
+
 import android.content.ContentValues
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -24,6 +23,7 @@ import java.util.Locale
 import android.widget.Button
 import android.content.Intent
 
+
 class TakePicture : AppCompatActivity() {
     private lateinit var viewBinding: TakepicturepageBinding
 
@@ -40,11 +40,19 @@ class TakePicture : AppCompatActivity() {
         setContentView(viewBinding.root)
 
         /* Start Camera or ask for camera permission */
-        if (allPermissionsGranted()) {
+
+        if (MainActivity.Shared.allPermissionsGranted(this)) {
             startCamera()
         }
         else {
-            requestPermissions()
+            val ActivityResultLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+                permissions -> MainActivity.Shared.handlePermissionsResults(this, permissions)
+            }
+
+            while (!MainActivity.Shared.allPermissionsGranted(this)) {
+                MainActivity.Shared.requestPermissions(this, ActivityResultLauncher)
+            }
+            startCamera()
         }
 
         viewBinding.imageCaptureButton.setOnClickListener{ takePicture() }
@@ -61,35 +69,18 @@ class TakePicture : AppCompatActivity() {
     }
 
     /* */
-    private val activityResultLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-        permissions ->
-
-        var permissionsGranted = true
-        permissions.entries.forEach {
-            if (it.key in REQUIRED_PERMISSIONS && !it.value) {
-                permissionsGranted = false
-            }
-        }
-        if (!permissionsGranted) {
-            Toast.makeText(baseContext, "Permission request denied", Toast.LENGTH_SHORT).show()
-        }
-        else {
-            startCamera()
-        }
-
-    }
     private fun takePicture() {
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
         // Create time stamped name and MediaStore entry.
-        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
+        val name = SimpleDateFormat(MainActivity.FILENAME_FORMAT, Locale.US)
             .format(System.currentTimeMillis())
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
             if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/PainlessPrep")
+                put(MediaStore.Images.Media.RELATIVE_PATH, getString(R.string.SaveDirectory))
             }
         }
 
@@ -107,14 +98,14 @@ class TakePicture : AppCompatActivity() {
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                    Log.e(MainActivity.TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
                 override fun
                         onImageSaved(output: ImageCapture.OutputFileResults){
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, msg)
+                    Log.d(MainActivity.TAG, msg)
                 }
             }
         )
@@ -137,34 +128,13 @@ class TakePicture : AppCompatActivity() {
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
             }
             catch (exc: Exception) {
-                Log.e(TAG, "Use case binding failed", exc)
+                Log.e(MainActivity.TAG, "Use case binding failed", exc)
             }
         }, ContextCompat.getMainExecutor(this))
-    }
-
-    private fun requestPermissions() {
-        activityResultLauncher.launch(REQUIRED_PERMISSIONS)
-    }
-
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
-    }
-
-    companion object {
-        private const val TAG = "Painless Prep App"
-        private const val FILENAME_FORMAT = "MM-dd-yyyy-HH-mm-ss"
-        private val REQUIRED_PERMISSIONS =
-            mutableListOf(
-                Manifest.permission.CAMERA
-            ).apply {
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-                    add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                }
-            }.toTypedArray()
     }
 }
