@@ -24,6 +24,7 @@ with open(data_csv, newline='') as csvfile:
 
 # creating the results list to be put into the csv file later
 results = []
+accuracy_scores = []
 
 # making sure that the img_id exists, matches the file name, and is the right file type 
 for filename in os.listdir(test_images):
@@ -81,6 +82,8 @@ for filename in os.listdir(test_images):
                 #generates the accuracy of the window detection
                 accuracy = round(1 - avg_error, 2)
 
+                accuracy_scores.append(accuracy)
+
                 # appends results to the list
                 results.append([img_id, actual_width, actual_height, expected_width, expected_height, accuracy])
 
@@ -117,6 +120,8 @@ for filename in os.listdir(test_images):
                 #generates the accuracy of the window detection
                 accuracy = round(1 - avg_error, 2)
 
+                accuracy_scores.append(accuracy)
+
                 # appends results to the list
                 results.append([img_id, actual_width, actual_height, expected_width, expected_height, accuracy])
             
@@ -133,6 +138,12 @@ with open(results_csv, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(["id", "actual_width", "actual_height", "expected_width", "expected_height", "accuracy"])
     writer.writerows(results)
+
+if accuracy_scores:
+    avg_accuracy = round(sum(accuracy_scores) / len(accuracy_scores), 2)
+    print(f"Average accuracy: {avg_accuracy}")
+else:
+    print("No accuracy scores available.")
 
 # print to confirm that results.csv was created successfully
 print(f"Results saved to {results_csv}")
