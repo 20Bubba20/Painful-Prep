@@ -4,9 +4,20 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import android.widget.Button
+import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import java.security.Permission
 
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() /* ComponentActivity() */ {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -30,6 +41,49 @@ class MainActivity : ComponentActivity() {
         }
 
     }
+    object Shared {
+        fun requestPermissions(activity: Activity, launcher: ActivityResultLauncher<Array<String>>) {
+            launcher.launch(REQUIRED_PERMISSIONS)
+        }
 
+        fun allPermissionsGranted(context: Context) = REQUIRED_PERMISSIONS.all {
+            ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+        }
+
+        fun handlePermissionsResults(context: Context, permissions: Map<String, Boolean>) {
+            val permissionsGranted = REQUIRED_PERMISSIONS.all { permissions[it] == true }
+            if (!permissionsGranted) {
+                Toast.makeText(context, "Permission request denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    val activityResultLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            permissions ->
+
+        var permissionsGranted = true
+        permissions.entries.forEach {
+            if (it.key in MainActivity.Companion. REQUIRED_PERMISSIONS && !it.value) {
+                permissionsGranted = false
+            }
+        }
+        if (!permissionsGranted) {
+            Toast.makeText(baseContext, "Permission request denied", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+    companion object {
+        const val TAG = "Painless Prep App"
+        const val FILENAME_FORMAT = "MM-dd-yyyy-HH-mm-ss"
+        val REQUIRED_PERMISSIONS =
+            mutableListOf(
+                Manifest.permission.CAMERA
+            ).apply {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                    add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                }
+            }.toTypedArray()
+    }
 }
 
