@@ -16,10 +16,11 @@ import numpy as np
 import sys
 from pathlib import Path
 from typing import Literal
+from image_refiner import image_refiner
 
 from demo_tool import MM_IN_RATIO
 
-def calculate_two_markers(path: Path, marker_size_mm: int) -> tuple[int, int]:
+def calculate_two_markers(path: Path, marker_size_mm: int, marker_type: Literal["ArUco", "AprilTag"] = "ArUco") -> tuple[int, int]:
     """
     @brief Finds the width and height of a window using two ArUco markers.
 
@@ -32,13 +33,31 @@ def calculate_two_markers(path: Path, marker_size_mm: int) -> tuple[int, int]:
     @return Tuple (width, height) of the window in inches. Returns None if the number 
             of markers detected is not exactly two.
     """
-    image = cv.imread(path, cv.IMREAD_COLOR_RGB)
+    image = cv.imread(path, cv.IMREAD_COLOR_BGR)
+    gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    gray_image = image_refiner(gray_image, 2)
+    cv.imwrite("gray_before.jpg", gray_image)
+    cv.imwrite("gray_after.jpg", gray_image)
 
     # Find markers.
+    if marker_type == "ArUco":
+        dictionary = cv.aruco.getPredefinedDictionary(cv.aruco.DICT_4X4_50)
+    elif marker_type == "AprilTag":
+        dictionary = cv.aruco.getPredefinedDictionary(cv.aruco.DICT_APRILTAG_16H5)
+    
     corners, ids, _ = cv.aruco.detectMarkers(
-        image       =image,
-        dictionary  =cv.aruco.getPredefinedDictionary(cv.aruco.DICT_4X4_50)
+        image       = gray_image,
+        dictionary  = dictionary
         )
+
+    failed = cv.aruco.drawDetectedMarkers(image, _, borderColor=(0, 255, 0))
+    cv.imwrite("failed.jpg", failed)
+
+    success = cv.aruco.drawDetectedMarkers(image, corners, borderColor=(0, 255, 0))
+    cv.imwrite("success.jpg", success)
+
+    print(corners)
+    print(len(ids))
 
     # Exit if there are too few or too many markers.
     if len(ids) != 2:
@@ -60,7 +79,7 @@ def calculate_two_markers(path: Path, marker_size_mm: int) -> tuple[int, int]:
     else:
         top_marker_coords = corners[1]
         bottom_marker_coords = corners[0]
-    
+
     is_top_marker_left = top_marker_coords[0][1] < bottom_marker_coords[0][1]
 
     # Use this for verbose debugging:
@@ -140,7 +159,7 @@ def get_diff_two_markers_px(coords: list[tuple[int, int]], diagonal: Literal["TL
     # More or less than two markers is not valid.
     if len(coords) != 8:
         return None
-    
+
     # Isolate just the y coordinates.
     y_coords = [coord[1] for coord in coords]
     y_coords_tmp = y_coords.copy()
@@ -211,7 +230,7 @@ if __name__ == "__main__":
         print(__doc__)
         exit()
 
-    width, height = calculate_two_markers(sys.argv[1], int(sys.argv[2]))
+    width, height = calculate_two_markers(sys.argv[1], int(sys.argv[2]), marker_type="AprilTag")
 
     print(f"Width: {width:.2f} in")
     print(f"Height: {height:.2f} in")
