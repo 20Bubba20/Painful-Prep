@@ -1,4 +1,4 @@
-id,actual_height,actual_width,expected_height,expected_width,accuracy
+id,measured_height,measured_width,expected_height,expected_width,accuracy
 img_001.JPG,11.86,13.15,12,6,0.4
 img_002.JPG,14.23,7.48,12,6,0.78
 img_003.JPG,7.04,9.32,8,10,0.91

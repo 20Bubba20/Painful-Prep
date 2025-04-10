@@ -12,6 +12,21 @@ import demo_tool
     ]
 )
 def test_demo_tool(filepath, exp_width, exp_height):
+    """
+    @brief Test the demo_tool module for window pane detection and dimension calculation.
+    
+    @param filepath The path to the image file being tested.
+    @param exp_width The expected width of the detected window in inches.
+    @param exp_height The expected height of the detected window in inches.
+    
+    @details
+    This test verifies that:
+    - The `find_windowpane` function returns a valid numpy array.
+    - The returned array has exactly four corner coordinates.
+    - Each coordinate is a numpy array of shape (1,2) containing integer values.
+    - The `get_window_dimensions` function correctly calculates the window dimensions.
+    - The calculated width and height have an error margin of less than 20% compared to the expected values.
+    """
     corners_array = demo_tool.find_windowpane(filepath)
 
     assert isinstance(corners_array, np.ndarray), f"Expected corners_array to be list object, got {type(corners_array)}"

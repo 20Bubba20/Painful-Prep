@@ -40,11 +40,18 @@ To use the `two_marker_detect` tool, follow the below steps:
 7. Navigate to the `back-end` folder of the project directory.
 8. To run: `python two_marker_detect.py <path/to/image> <marker size in mm>`
 
+To use the `test_demo_tool_all_images` tool, follow the below steps:
+
+1. Navigate to the directory where `test_demo_tool_all_images.py` is located.
+2. Run: `python test_demo_tool_all_images.py`.
+
 ## Release Notes
 
 Code Milestone 1: The current prototype correctly detects edges of windowpanes in ideal conditions and calculates window dimensions. It is currently a command line tool. 
 
 Code Milestone 2: `two_marker_detect` demonstrates improved reliability and accuracy over the `demo_tool`. On branch `Jerron_Branch`, a mobile application is being developed to take pictures, it currently has UI components.
+
+Code Milestone 3: `two_marker_detect` now supports more diverse marker placement, which should improve reliability as users do not have to worry about specific marker placement. On branch `saving_test_runs` a test system has been developed that returns the average accuracy/error of running all test images with the appropriate dimension calculation functions.
 
 ## Contributing
 
