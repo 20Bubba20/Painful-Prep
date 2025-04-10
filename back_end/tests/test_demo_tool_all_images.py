@@ -25,6 +25,12 @@ with open(data_csv, newline='') as csvfile:
 # creating the results list to be put into the csv file later
 results = []
 accuracy_scores = []
+one_marker_accuracies = []
+two_marker_accuracies = []
+one_marker_attempts = 0
+two_marker_attempts = 0
+one_marker_success = 0
+two_marker_success = 0
 
 # making sure that the img_id exists, matches the file name, and is the right file type 
 for filename in os.listdir(test_images):
@@ -61,6 +67,7 @@ for filename in os.listdir(test_images):
         try:
             # check if marker_quantity = 1
             if marker_quantity == 1:
+                one_marker_attempts += 1
                 #find corners_array
                 corners_array = demo_tool.find_windowpane(img_path)
 
@@ -82,13 +89,16 @@ for filename in os.listdir(test_images):
                 #generates the accuracy of the window detection
                 accuracy = round(1 - (avg_error / 100), 2)
 
+                one_marker_accuracies.append(accuracy)
                 accuracy_scores.append(accuracy)
+                one_marker_success += 1
 
                 # appends results to the list
                 results.append([img_id, measured_height, measured_width, expected_height, expected_width, accuracy])
 
             # check if marker_quantity = 2
             elif marker_quantity == 2:
+                two_marker_attempts += 1
                 # gets the marker size from data.csv
                 with open(data_csv, newline='') as csvfile:
                     reader = csv.DictReader(csvfile)
@@ -120,7 +130,10 @@ for filename in os.listdir(test_images):
                 #generates the accuracy of the window detection
                 accuracy = round(1 - (avg_error / 100), 2)
 
+                two_marker_accuracies.append(accuracy)
+                
                 accuracy_scores.append(accuracy)
+                two_marker_success += 1
 
                 # appends results to the list
                 results.append([img_id, measured_height, measured_width, expected_height, expected_width, accuracy])
@@ -140,8 +153,17 @@ with open(results_csv, 'w', newline='') as csvfile:
     writer.writerows(results)
 
 if accuracy_scores:
-    avg_accuracy = round(sum(accuracy_scores) / len(accuracy_scores), 2)
-    print(f"Average accuracy: {avg_accuracy * 100} %")
+   overall_accuracy = round(sum(accuracy_scores) / len(accuracy_scores), 2)
+   print(f"Overall Accuracy: {overall_accuracy * 100:.2f}%")
+
+   if one_marker_attempts:
+       avg_one_marker_accuracy = round(sum(one_marker_accuracies) / one_marker_attempts, 2) if one_marker_accuracies else 0
+       reliability_one_marker = round((one_marker_success / one_marker_attempts) * 100, 2)
+       print(f"One Marker - Avg Accuracy: {avg_one_marker_accuracy * 100:.2f}% | Reliability: {reliability_one_marker:.2f}%")
+   if two_marker_attempts:
+       avg_two_marker_acc = round(sum(two_marker_accuracies) / len(two_marker_accuracies), 2) if two_marker_accuracies else 0
+       reliability_two = round(two_marker_success / two_marker_attempts * 100, 2)
+       print(f"Two Marker - Avg Accuracy: {avg_two_marker_acc * 100:.2f}% | Reliability: {reliability_two:.2f}%")
 else:
     print("No accuracy scores available.")
 
