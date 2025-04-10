@@ -67,25 +67,25 @@ for filename in os.listdir(test_images):
                 #gets height and width form demo_tool calculation
                 raw_height, raw_width = demo_tool.get_window_dimensions(img_path, corners_array)
 
-                actual_height = round(raw_height, 2)
-                actual_width = round(raw_width, 2)
+                measured_height = round(raw_height, 2)
+                measured_width = round(raw_width, 2)
 
                 # finds the expected width and height from data.csv
                 expected_width = expected_data[img_id]['width']
                 expected_height = expected_data[img_id]['height']
 
                 # finds the percent error for the width and height per window
-                w_err = abs((actual_width - expected_width) / expected_width)
-                h_err = abs((actual_height - expected_height) / expected_height)
+                w_err = (abs((measured_width - expected_width)) / expected_width) * 100
+                h_err = (abs((measured_height - expected_height)) / expected_height) * 100
                 avg_error = (w_err + h_err) / 2
 
                 #generates the accuracy of the window detection
-                accuracy = round(1 - avg_error, 2)
+                accuracy = round(1 - (avg_error / 100), 2)
 
                 accuracy_scores.append(accuracy)
 
                 # appends results to the list
-                results.append([img_id, actual_width, actual_height, expected_width, expected_height, accuracy])
+                results.append([img_id, measured_height, measured_width, expected_height, expected_width, accuracy])
 
             # check if marker_quantity = 2
             elif marker_quantity == 2:
@@ -100,11 +100,11 @@ for filename in os.listdir(test_images):
                 # calculates the actual height and width using two_marker_detect
                 raw_height, raw_width = two_marker_detect.calculate_two_markers(img_path, marker_size)
 
-                actual_height = round(raw_height, 2)
-                actual_width = round(raw_width, 2)
+                measured_height = round(raw_height, 2)
+                measured_width = round(raw_width, 2)
 
                 # checks if the actual height and width are None (if the image is not detected)
-                if actual_height is None or actual_width is None:
+                if measured_height is None or measured_width is None:
                     print(f"Error: Unable to calculate dimensions for {img_id}")
                     continue
 
@@ -113,17 +113,17 @@ for filename in os.listdir(test_images):
                 expected_width = expected_data[img_id]['width']
 
                 # finds the percent error for the width and height per window
-                w_err = abs((actual_width - expected_width) / expected_width)
-                h_err = abs((actual_height - expected_height) / expected_height)
+                w_err = (abs((measured_width - expected_width)) / expected_width) * 100
+                h_err = (abs((measured_height - expected_height)) / expected_height) * 100
                 avg_error = (w_err + h_err) / 2
 
                 #generates the accuracy of the window detection
-                accuracy = round(1 - avg_error, 2)
+                accuracy = round(1 - (avg_error / 100), 2)
 
                 accuracy_scores.append(accuracy)
 
                 # appends results to the list
-                results.append([img_id, actual_width, actual_height, expected_width, expected_height, accuracy])
+                results.append([img_id, measured_height, measured_width, expected_height, expected_width, accuracy])
             
             # error check for invalid marker quantities
             else:
@@ -136,12 +136,12 @@ for filename in os.listdir(test_images):
 # creates results.csv with the data from the results list
 with open(results_csv, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(["id", "actual_width", "actual_height", "expected_width", "expected_height", "accuracy"])
+    writer.writerow(["id", "measured_height", "measured_width", "expected_height", "expected_width", "accuracy"])
     writer.writerows(results)
 
 if accuracy_scores:
     avg_accuracy = round(sum(accuracy_scores) / len(accuracy_scores), 2)
-    print(f"Average accuracy: {avg_accuracy}")
+    print(f"Average accuracy: {avg_accuracy * 100} %")
 else:
     print("No accuracy scores available.")
 
