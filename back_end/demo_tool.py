@@ -144,7 +144,7 @@ def get_window_dimensions(path: str, quadrilateral: np.ndarray) -> tuple:
             break
 
     if not marker_detect_success:
-        raise Exception
+        raise ValueError("No reference marker found in the image, please take or upload another image.")
     
     tl_marker = marker_corners[0]
     tr_marker = marker_corners[1]

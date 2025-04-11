@@ -41,8 +41,8 @@ def calculate_two_markers(path: Path, marker_size_mm: int) -> tuple[int, int]:
         )
 
     # Exit if there are too few or too many markers.
-    if len(ids) != 2:
-        return None
+    if ids is None or len(ids) != 2:
+        raise ValueError("Unable to detect two markers, please take or upload another image.")
     
     # Get the average scale.
     scale_px = (get_scale(corners[0][0]) + get_scale(corners[1][0])) / 2
@@ -139,7 +139,7 @@ def get_diff_two_markers_px(coords: list[tuple[int, int]], diagonal: Literal["TL
     """
     # More or less than two markers is not valid.
     if len(coords) != 8:
-        return None
+        raise ValueError("Invalid number of markers detected, expected two markers, found: {len(coords) // 2}.")
     
     # Isolate just the y coordinates.
     y_coords = [coord[1] for coord in coords]
@@ -191,7 +191,7 @@ def get_diff_two_markers_px(coords: list[tuple[int, int]], diagonal: Literal["TL
 
         return tr_coord_x, tr_coord_y, bl_coord_x, bl_coord_y
     else:
-        return None
+        raise ValueError("Unable to find diagonal for calculation, please take or upload another image.")
 
 if __name__ == "__main__":
     """

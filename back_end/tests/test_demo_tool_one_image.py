@@ -1,7 +1,10 @@
 import pytest
 import numpy as np
 import csv
+
 import demo_tool
+
+
 
 @pytest.mark.parametrize(("filepath", "exp_width", "exp_height"), 
     [
@@ -34,7 +37,7 @@ def test_demo_tool(filepath, exp_width, exp_height):
         assert coordinate.shape == (1, 2), f"Expected coordinate to have 2 elements, got {len(coordinate)}"
 
         for j, val in enumerate(coordinate[0]):
-            assert isinstance(val, np.int32), f"Expected val {j} to be of type int, got {type(val)}"
+            assert isinstance(val, (np.integer, int)), f"Expected val {j} to be of type int, got {type(val)}"
     
     actual_height, actual_width = demo_tool.get_window_dimensions(filepath, corners_array)
 
