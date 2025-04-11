@@ -72,7 +72,7 @@ for filename in os.listdir(test_images):
                 corners_array = demo_tool.find_windowpane(img_path)
 
                 #gets height and width form demo_tool calculation
-                raw_height, raw_width = demo_tool.get_window_dimensions(img_path, corners_array)
+                raw_width, raw_height = demo_tool.get_window_dimensions(img_path, corners_array)
 
                 measured_height = round(raw_height, 2)
                 measured_width = round(raw_width, 2)
