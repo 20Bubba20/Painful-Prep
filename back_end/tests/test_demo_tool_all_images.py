@@ -109,7 +109,7 @@ for filename in os.listdir(test_images):
                             break
 
                 # calculates the actual height and width using two_marker_detect
-                raw_width, raw_height = two_marker_detect.calculate_two_markers(img_path, marker_size)
+                raw_width, raw_height = two_marker_detect.calculate_two_markers(img_path, marker_size, marker_type)
 
                 measured_height = round(raw_height, 2)
                 measured_width = round(raw_width, 2)
