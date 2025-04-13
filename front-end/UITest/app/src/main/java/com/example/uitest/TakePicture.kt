@@ -101,11 +101,13 @@ class TakePicture : AppCompatActivity() {
                     Log.e(MainActivity.TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
-                override fun
-                        onImageSaved(output: ImageCapture.OutputFileResults){
+                override fun onImageSaved(output: ImageCapture.OutputFileResults){
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(MainActivity.TAG, msg)
+                    val intent: Intent = Intent(applicationContext, dimensions::class.java)
+                    intent.putExtra("photo", output.savedUri)
+                    startActivity(intent)
                 }
             }
         )
