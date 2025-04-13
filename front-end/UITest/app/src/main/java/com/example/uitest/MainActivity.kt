@@ -42,8 +42,16 @@ class MainActivity : AppCompatActivity() /* ComponentActivity() */ {
 
     }
     object Shared {
+        private var permissionReqInProgress = false
+
         fun requestPermissions(activity: Activity, launcher: ActivityResultLauncher<Array<String>>) {
-            launcher.launch(REQUIRED_PERMISSIONS)
+            if (!permissionReqInProgress) {
+                permissionReqInProgress = true
+                launcher.launch(REQUIRED_PERMISSIONS)
+                permissionReqInProgress = false
+            }
+
+
         }
 
         fun allPermissionsGranted(context: Context) = REQUIRED_PERMISSIONS.all {
@@ -79,6 +87,7 @@ class MainActivity : AppCompatActivity() /* ComponentActivity() */ {
         val REQUIRED_PERMISSIONS =
             mutableListOf(
                 Manifest.permission.CAMERA
+                //Manifest.permission.READ_EXTERNAL_STORAGE
             ).apply {
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)

@@ -6,5 +6,11 @@
         android:id="@+id/index"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Go to Home" />
+        android:text="@string/to_index" />
+
+    <Button
+        android:id="@+id/uploadPicture"
+        android:layout_width="166dp"
+        android:layout_height="wrap_content"
+        android:text="@string/import_photo" />
 </LinearLayout>
