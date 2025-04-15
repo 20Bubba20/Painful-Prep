@@ -14,12 +14,17 @@ Usage:
 import cv2 as cv
 import numpy as np
 import sys
+import os
 from pathlib import Path
 from typing import Literal
 
 from demo_tool import MM_IN_RATIO
 
-def calculate_two_markers(path: Path, marker_size_mm: int) -> tuple[int, int]:
+def calculate_two_markers(
+        path: Path, 
+        marker_size_mm: int,
+        marker_type: Literal["ArUco", "AprilTag"]="ArUco"
+    ) -> tuple[int, int]:
     """
     @brief Finds the width and height of a window using two ArUco markers.
 
@@ -32,18 +37,39 @@ def calculate_two_markers(path: Path, marker_size_mm: int) -> tuple[int, int]:
     @return Tuple (width, height) of the window in inches. Returns None if the number 
             of markers detected is not exactly two.
     """
-    image = cv.imread(path, cv.IMREAD_COLOR_RGB)
+    image = cv.imread(path, cv.IMREAD_COLOR_BGR)
 
     # Find markers.
-    corners, ids, _ = cv.aruco.detectMarkers(
-        image       =image,
-        dictionary  =cv.aruco.getPredefinedDictionary(cv.aruco.DICT_4X4_50)
+    if marker_type == "ArUco":
+        corners, ids, _ = cv.aruco.detectMarkers(
+            image       =image,
+            dictionary  =cv.aruco.getPredefinedDictionary(cv.aruco.DICT_4X4_50)
+        )
+    elif marker_type == "AprilTag":
+        dictionary = cv.aruco.getPredefinedDictionary(cv.aruco.DICT_APRILTAG_16H5)
+        params = cv.aruco.DetectorParameters()
+        params.markerBorderBits = 2
+        params.adaptiveThreshWinSizeStep = 1
+
+        corners, ids, _ = cv.aruco.detectMarkers(
+            image       = image,
+            dictionary  = dictionary,
+            parameters  = params
         )
 
     # Exit if there are too few or too many markers.
     if ids is None or len(ids) != 2:
+        debug_image = cv.aruco.drawDetectedMarkers(
+            image       =image,
+            corners     =corners,
+            ids         =ids,
+            borderColor =(0, 255, 0)
+            )
+        debug_name = os.path.basename(path)
+        cv.imwrite(f"{debug_name[0:7]}_detectedMarkers.jpg", debug_image)
+        print(ids)
         raise ValueError("Unable to detect two markers, please take or upload another image.")
-    
+
     # Get the average scale.
     scale_px = (get_scale(corners[0][0]) + get_scale(corners[1][0])) / 2
 
@@ -121,7 +147,10 @@ def get_scale(corners: np.ndarray) -> float:
 
     return scale
 
-def get_diff_two_markers_px(coords: list[tuple[int, int]], diagonal: Literal["TLBR", "TRBL"] = "TLBR") -> tuple[int, int, int, int]:
+def get_diff_two_markers_px(
+        coords: list[tuple[int, int]], 
+        diagonal: Literal["TLBR", "TRBL"] = "TLBR"
+        ) -> tuple[int, int, int, int]:
     """
     @brief Finds the coordinates of the diagonal of a window.
 
@@ -211,7 +240,9 @@ if __name__ == "__main__":
         print(__doc__)
         exit()
 
-    width, height = calculate_two_markers(sys.argv[1], int(sys.argv[2]))
-
-    print(f"Width: {width:.2f} in")
-    print(f"Height: {height:.2f} in")
+    try:
+        width, height = calculate_two_markers(sys.argv[1], int(sys.argv[2]))
+        print(f"Width: {width:.2f} in")
+        print(f"Height: {height:.2f} in")
+    except ValueError as e:
+        print(e)

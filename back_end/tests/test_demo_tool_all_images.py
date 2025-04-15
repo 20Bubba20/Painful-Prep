@@ -18,8 +18,8 @@ with open(data_csv, newline='') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         expected_data[row["id"]] = {
-            'width': round(float(row["window_width"])),
-            'height': round(float(row["window_height"]))
+            'width': float(row["window_width"]),
+            'height': float(row["window_height"])
         }
 
 # creating the results list to be put into the csv file later
@@ -72,7 +72,7 @@ for filename in os.listdir(test_images):
                 corners_array = demo_tool.find_windowpane(img_path)
 
                 #gets height and width form demo_tool calculation
-                raw_height, raw_width = demo_tool.get_window_dimensions(img_path, corners_array)
+                raw_width, raw_height = demo_tool.get_window_dimensions(img_path, corners_array)
 
                 measured_height = round(raw_height, 2)
                 measured_width = round(raw_width, 2)
@@ -105,10 +105,11 @@ for filename in os.listdir(test_images):
                     for row in reader:
                         if img_id == row["id"]:
                             marker_size = int(row["marker_size"])
+                            marker_type = row["marker_type"]
                             break
 
                 # calculates the actual height and width using two_marker_detect
-                raw_height, raw_width = two_marker_detect.calculate_two_markers(img_path, marker_size)
+                raw_width, raw_height = two_marker_detect.calculate_two_markers(img_path, marker_size, marker_type)
 
                 measured_height = round(raw_height, 2)
                 measured_width = round(raw_width, 2)
