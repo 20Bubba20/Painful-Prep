@@ -2,7 +2,6 @@ package com.example.uitest
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import android.widget.Button
 import android.Manifest
 import android.app.Activity
@@ -14,10 +13,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import java.security.Permission
 
 
-class MainActivity : AppCompatActivity() /* ComponentActivity() */ {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -81,6 +79,7 @@ class MainActivity : AppCompatActivity() /* ComponentActivity() */ {
 
     }
 
+    /* The data for naming the photo taken in TakePicture.kt */
     companion object {
         const val TAG = "Painless Prep App"
         const val FILENAME_FORMAT = "MM-dd-yyyy-HH-mm-ss"

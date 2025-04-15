@@ -20,7 +20,7 @@
             android:name=".dimensions"
             android:exported="false"
             android:label="@string/title_activity_dimensions"
-            android:theme="@style/Theme.UITest" />
+            android:theme="@style/Theme.AppCompat" />
         <activity
             android:name=".TakePicture"
             android:exported="true"
@@ -31,7 +31,7 @@
             android:name=".ImportPicture"
             android:exported="false"
             android:label="@string/title_activity_import_picture"
-            android:theme="@style/Theme.UITest" />
+            android:theme="@style/Theme.AppCompat" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -39,7 +39,6 @@
             android:theme="@style/Theme.AppCompat" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
