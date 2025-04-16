@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Gradle: androidx.camera:camera-lifecycle:1.2.2@aar" external-system-id="GRADLE">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/8.10.2/transforms/9c7a797847c80cec1a5c09e20f3e3469/transformed/camera-lifecycle-1.2.2/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/8.10.2/transforms/9c7a797847c80cec1a5c09e20f3e3469/transformed/camera-lifecycle-1.2.2/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/8.10.2/transforms/9c7a797847c80cec1a5c09e20f3e3469/transformed/camera-lifecycle-1.2.2/AndroidManifest.xml" />
+      <root url="jar://$PROJECT_DIR$/caches/8.10.2/transforms/9c7a797847c80cec1a5c09e20f3e3469/transformed/camera-lifecycle-1.2.2/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/caches/8.10.2/transforms/9c7a797847c80cec1a5c09e20f3e3469/transformed/camera-lifecycle-1.2.2/AndroidManifest.xml" />
+      <root url="file://$PROJECT_DIR$/caches/8.10.2/transforms/9c7a797847c80cec1a5c09e20f3e3469/transformed/camera-lifecycle-1.2.2/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.camera/camera-lifecycle/1.2.2/207884d7016947db3582f2bfc8f2073a390745ff/camera-lifecycle-1.2.2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/caches/modules-2/files-2.1/androidx.camera/camera-lifecycle/1.2.2/207884d7016947db3582f2bfc8f2073a390745ff/camera-lifecycle-1.2.2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

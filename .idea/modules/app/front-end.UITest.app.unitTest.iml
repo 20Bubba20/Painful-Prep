@@ -31,7 +31,7 @@
           </stringArguments>
           <arrayArguments>
             <arrayArg name="pluginClasspaths">
-              <args>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-compose-compiler-plugin-embeddable/2.0.0/2fb44a0a13396500655e91a66f292f0c9cb672dc/kotlin-compose-compiler-plugin-embeddable-2.0.0.jar</args>
+              <args>$MODULE_DIR$/../../../caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-compose-compiler-plugin-embeddable/2.0.0/2fb44a0a13396500655e91a66f292f0c9cb672dc/kotlin-compose-compiler-plugin-embeddable-2.0.0.jar</args>
             </arrayArg>
             <arrayArg name="pluginOptions">
               <args>

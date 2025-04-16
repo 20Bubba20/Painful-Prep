@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Painful-Prep.iml" filepath="$PROJECT_DIR$/.idea/modules/Painful-Prep.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/UITest.iml" filepath="$PROJECT_DIR$/.idea/modules/UITest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/UITest.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/UITest.app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/front-end.UITest.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/front-end.UITest.app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/front-end.UITest.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/front-end.UITest.app.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/front-end.UITest.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/front-end.UITest.app.main.iml" />
