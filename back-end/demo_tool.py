@@ -8,6 +8,7 @@ import cv2 as cv
 import numpy as np
 import sys
 from pathlib import Path
+import line_finder
 
 
 MARKER_LENGTH_MM = 100
@@ -89,78 +90,109 @@ def find_windowpane(path: Path) -> np.ndarray:
     cv.imwrite("5_dog_final.jpg", dog_final)
     cv.imwrite("6_combined.jpg", combined_image)
 
-    height, width = grayscale_image.shape
-    lines_image = np.zeros(
-        shape=(height, width), 
-        dtype=np.uint8
+    # lines_image = np.zeros(
+    #     shape=(height, width),
+    #     dtype=np.uint8
+    #     )
+    #
+    #
+    # lines = cv.HoughLinesP(
+    #     image           =combined_image,
+    #     rho             =1,
+    #     theta           =np.pi / 180,
+    #     threshold       =25,
+    #     minLineLength   =1000,
+    #     maxLineGap      =55
+    #     )
+    #
+    # for line in lines:
+    #     x1, y1, x2, y2 = line[0]  # Extract line endpoints
+    #     cv.line(
+    #         img         =lines_image,
+    #         pt1         =(x1, y1),
+    #         pt2         =(x2, y2),
+    #         color       =255,
+    #         thickness   =1
+    #         )
+    #
+    # lines_image = cv.morphologyEx(
+    #     src         =lines_image,
+    #     op          =cv.MORPH_CLOSE,
+    #     kernel      =np.ones((5, 5), np.uint8),
+    #     iterations  =2
+    # )
+    quad, lines_image = line_finder.process_lines(combined_image, show_output=True)
+
+    if quad is not None:
+        # Ensure quad is a NumPy array of type int32
+        quad = np.array(quad, dtype=np.int32).reshape((-1, 1, 2))
+
+        # Draw quadrilateral on a copy of the original image
+        orig = image.copy()
+        cv.polylines(orig, [quad], True, (0, 255, 0), 20)
+
+        cv.imwrite("contours.jpg", orig)
+    else:
+        print("No quadrilateral found.")
+        for line in lines_image:
+            x1, y1, x2, y2 = line[0]  # Extract line endpoints
+            cv.line(
+                img         =lines_image,
+                pt1         =(x1, y1),
+                pt2         =(x2, y2),
+                color       =255,
+                thickness   =1
+                )
+
+        lines_image = cv.morphologyEx(
+            src         =lines_image,
+            op          =cv.MORPH_CLOSE,
+            kernel      =np.ones((5, 5), np.uint8),
+            iterations  =2
         )
 
-    lines = cv.HoughLinesP(
-        image           =combined_image,
-        rho             =1, 
-        theta           =np.pi / 180, 
-        threshold       =25, 
-        minLineLength   =1000, 
-        maxLineGap      =55
-        )
-    
-    for line in lines:
-        x1, y1, x2, y2 = line[0]  # Extract line endpoints
-        cv.line(
-            img         =lines_image, 
-            pt1         =(x1, y1), 
-            pt2         =(x2, y2), 
-            color       =255, 
-            thickness   =1
-            )
-        
-    lines_image = cv.morphologyEx(
-        src         =lines_image,
-        op          =cv.MORPH_CLOSE,
-        kernel      =np.ones((5, 5), np.uint8),
-        iterations  =2
-    )
-    
-    cv.imwrite("lines_image.jpg", lines_image)
-    
-    contours, _ = cv.findContours(
-        image   =lines_image, 
-        mode    =cv.RETR_EXTERNAL, 
-        method  =cv.CHAIN_APPROX_SIMPLE
-        )
-    
-    window_candidate = None
-    contours = sorted(contours, key=cv.contourArea, reverse=True)
-    if contours:
-        contour = contours[0]
+    lines_output = cv.dilate(lines_image, kernel=np.ones((5, 5), np.uint8), iterations=3)
 
-        window_candidate = cv.approxPolyDP(
-            curve   =contour,
-            epsilon =0.015 * cv.arcLength(curve=contour, closed=True),
-            closed  =True
-        )
-
-        cv.polylines(
-            img         =image,
-            pts         =[window_candidate],
-            isClosed    =True,
-            color       =(0, 255, 0),
-            thickness   =25
-        )
-
-        # Does the shape have four distinct sides?
-        if len(window_candidate) == 4:
-            cv.drawContours(
-                image       =image,
-                contours    =[window_candidate],
-                contourIdx  =-1,   # This draws all contours in the array.
-                color       =(0, 0, 255),
-                thickness   =10
-            )
+    cv.imwrite("lines_image.jpg", lines_output)
     
-    cv.imwrite("contours.jpg", image)
+    # contours, _ = cv.findContours(
+    #     image   =lines_image,
+    #     mode    =cv.RETR_EXTERNAL,
+    #     method  =cv.CHAIN_APPROX_SIMPLE
+    #     )
+    #
+    # window_candidate = None
+    # contours = sorted(contours, key=cv.contourArea, reverse=True)
+    # if contours:
+    #     contour = contours[0]
+    #
+    #     window_candidate = cv.approxPolyDP(
+    #         curve   =contour,
+    #         epsilon =0.015 * cv.arcLength(curve=contour, closed=True),
+    #         closed  =True
+    #     )
+    #
+    #     cv.polylines(
+    #         img         =image,
+    #         pts         =[window_candidate],
+    #         isClosed    =True,
+    #         color       =(0, 255, 0),
+    #         thickness   =25
+    #     )
+    #
+    #     # Does the shape have four distinct sides?
+    #     if len(window_candidate) == 4:
+    #         cv.drawContours(
+    #             image       =image,
+    #             contours    =[window_candidate],
+    #             contourIdx  =-1,   # This draws all contours in the array.
+    #             color       =(0, 0, 255),
+    #             thickness   =10
+    #         )
+    #
+    # cv.imwrite("contours.jpg", image)
 
-    return window_candidate
+    return quad
 
 def get_window_dimensions(path: str, quadrilateral: np.ndarray) -> tuple:
     """Finds window dimensions.
