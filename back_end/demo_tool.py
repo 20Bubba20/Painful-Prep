@@ -13,84 +13,37 @@ from pathlib import Path
 MARKER_LENGTH_MM = 100
 MM_IN_RATIO = 25.4
 
-
-def apply_dog(image: np.ndarray, sigma1=1.0, sigma2=2.0) -> np.ndarray:
-    blur1 = cv.GaussianBlur(image, (0, 0), sigma1)
-    blur2 = cv.GaussianBlur(image, (0, 0), sigma2)
-    dog = cv.subtract(blur1, blur2)
-
-    # Normalize to 0-255 for visibility
-    dog = cv.normalize(dog, None, 0, 255, cv.NORM_MINMAX).astype(np.uint8)
-
-    return dog
-
-
-def apply_canny(image: np.ndarray):
-
-    # Use Otsu's method to find threshold for canny detection
-    thresh, otsu_thresh = cv.threshold(image, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
-
-    canny_image = cv.Canny(
-        image=image,
-        threshold1=thresh,
-        threshold2=thresh*1.5
-    )
-
-    canny_image = cv.dilate(
-        src=canny_image,
-        kernel=np.ones((5, 5), np.uint8),
-        iterations=2
-    )
-
-    canny_image = cv.morphologyEx(
-        src=canny_image,
-        op=cv.MORPH_CLOSE,
-        kernel=np.ones((5, 5), np.uint8),
-        iterations=2
-    )
-    return canny_image
-
-
 def find_windowpane(path: Path) -> np.ndarray:
-    """Finds window.
-
-    Args:
-        path (pathlib.Path): File path to picture containing window.
-
-    Returns:
-        numpy.ndarray: Coordinates of corners of window.
+    """
+    @brief Finds the window in an image.
+    
+    @param path File path to picture containing the window.
+    @return Coordinates of corners of the detected window as a numpy.ndarray.
     """
     image = cv.imread(path, cv.IMREAD_COLOR_RGB)
     grayscale_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
 
-    # Apply Canny Pass
-    canny_image = apply_canny(grayscale_image)
+    canny_image = cv.Canny(
+        image       =grayscale_image, 
+        threshold1  =200, 
+        threshold2  =255
+        )
+    
+    canny_image = cv.dilate(
+        src         =canny_image, 
+        kernel      =np.ones((5, 5), np.uint8), 
+        iterations  =2
+        )
+    
+    canny_image = cv.morphologyEx(
+        src         =canny_image, 
+        op          =cv.MORPH_CLOSE, 
+        kernel      =np.ones((5, 5), np.uint8), 
+        iterations  =2
+        )
 
-    # Apply 2 DoG passes to find well and poorly defined edges
-    dog_pass_1 = apply_dog(image=grayscale_image, sigma1=4.0, sigma2=7.0)
-    dog_pass_2 = apply_dog(image=grayscale_image, sigma1=20.0, sigma2=25.0)
-
-    # Combine DoG passes by weighted sum, blur to cull noise and artifacts,
-    # apply another DoG pass and crush to black and white with ostu threshold
-    dog_combined = cv.addWeighted(dog_pass_1, 0.6, dog_pass_2, 0.4, 0)
-    dog_combined = apply_dog(dog_combined, sigma1=10.0, sigma2=13.0)
-    dog_combined = cv.blur(dog_combined, (10, 10))
-    _, dog_final = cv.threshold(dog_combined, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
-
-    # Dilate B/W DoG output for masking
-    dog_final = cv.dilate(dog_final, kernel=np.ones((5, 5), np.uint8), iterations=3)
-
-    # Combine DoG with canny by using it as a mask
-    combined_image = cv.bitwise_and(canny_image, dog_final)
-
-    # Output every pass in order
     if __name__ == "__main__":
-        cv.imwrite("1_canny.jpg", canny_image)
-        cv.imwrite("2_dog1.jpg", dog_pass_1)
-        cv.imwrite("3_dog2.jpg", dog_pass_2)
-        cv.imwrite("4_dog_combined.jpg", dog_combined)
-        cv.imwrite("5_dog_final.jpg", dog_final)
-        cv.imwrite("6_combined.jpg", combined_image)
+        cv.imwrite("canny.jpg", canny_image)
 
     height, width = grayscale_image.shape
     lines_image = np.zeros(
@@ -99,7 +52,7 @@ def find_windowpane(path: Path) -> np.ndarray:
         )
 
     lines = cv.HoughLinesP(
-        image           =combined_image,
+        image           =canny_image, 
         rho             =1, 
         theta           =np.pi / 180, 
         threshold       =25, 
@@ -170,7 +123,7 @@ def find_windowpane(path: Path) -> np.ndarray:
 def get_window_dimensions(path: str, quadrilateral: np.ndarray) -> tuple:
     """
     @brief Computes the width and height of a detected window.
-
+    
     @param path File path to the image containing the window.
     @param quadrilateral Coordinates of the detected window corners.
     @return Tuple containing the width and height of the window in inches.
