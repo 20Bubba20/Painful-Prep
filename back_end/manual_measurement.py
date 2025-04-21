@@ -27,9 +27,10 @@ def main():
         print(__doc__)
         exit()
 
-    marker_size_mm = sys.argv[2]
+    marker_size_mm = int(sys.argv[2])
     window_name = path.name
-    marker_coords = window_coords = []
+    marker_coords = []
+    window_coords = []
 
     image = cv.imread(path, cv.IMREAD_COLOR_RGB)
     image = resize_with_aspect_ratio(image, height=900)
@@ -46,6 +47,8 @@ def main():
 
     if len(window_coords) != 4:
         raise ValueError("too many corner coordinates for window")
+    
+    marker_coords = np.array(marker_coords, dtype="float32")
     
     scale_px = two_marker_detect.get_scale(marker_coords)
     t_coord_x, t_coord_y, b_coord_x, b_coord_y = two_marker_detect.get_diff_two_markers_px(window_coords, "TLBR")
@@ -66,7 +69,7 @@ def click_handler(event, x, y, _, params: tuple[list, list]):
     if event is not cv.EVENT_LBUTTONDOWN:
         return
     image, coords = params
-    coords.append((x, y))
+    coords.append([x, y])
     cv.circle(image, (x, y), 5, (0, 255, 0), -1)
     cv.imshow('Image', image)
 
