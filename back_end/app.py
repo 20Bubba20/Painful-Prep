@@ -12,7 +12,7 @@ def detect_window_dimensions():
         return jsonify({"error": "Missing required parameters"}), 400
 
     image_file = request.files['image']
-    marker_size = request.form['marker_size']
+    marker_size = 20
 
     try:
         marker_size = int(marker_size)
@@ -34,4 +34,4 @@ def detect_window_dimensions():
         return jsonify({"error": str(e)}), 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

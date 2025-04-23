@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="front-end.UITest.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-04-16T16:13:12.306828100Z">
+        <DropdownSelection timestamp="2025-04-23T04:24:31.854277600Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\lfjoh\.android\avd\Medium_Phone.avd" />
@@ -20,6 +20,9 @@
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="front-end.UITest.app.unitTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="UITest.app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

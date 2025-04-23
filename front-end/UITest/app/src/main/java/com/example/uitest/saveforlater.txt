@@ -1,0 +1,3 @@
+val intent: Intent = Intent(this, dimensions::class.java)
+                intent.putExtra("photo", uri)
+                startActivity(intent)
