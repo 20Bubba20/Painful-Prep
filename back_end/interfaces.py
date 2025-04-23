@@ -1,6 +1,4 @@
 from typing import Protocol, Literal
-from dataclasses import dataclass
-import cv2
 import numpy as np
 
 class StageContext:
@@ -23,14 +21,13 @@ class MarkerDetector(Protocol):
 
 class WindowDetector(Protocol):
     context: StageContext | None
-    scale_px: float
 
     def detect(self, image: np.ndarray) -> np.ndarray:
         ...
 
 class DimensionCalculator(Protocol):
     context: StageContext | None
-    scale_px: float
+    scale_mm: float
 
     def calculate(self, window_corners: np.ndarray) -> tuple[float, float]:
         ...
