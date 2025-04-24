@@ -8,4 +8,5 @@
     <string name="SaveDirectory">Pictures/PainlessPrep</string>
     <string name="import_photo">Import Photo</string>
     <string name="Logo">PainlessPrepLogo</string>
+    <string name="ip">11.22.15.72</string>
 </resources>

@@ -5,7 +5,7 @@ CSCI4970-Capstone Spring 2025
 
 The Painting Prep App is an app for customers of Painless Prep. The app will allow customers to take pictures of windows to detect window dimensions, which can then be used by Painless Prep to manufacture custom window covers. The `demo_tool` is a prototype for the Painting Prep App. Currently, the `demo_tool` takes a picture containing a window as input and returns the dimensions of the window in inches. This `demo_tool` proves the project feasible.
 
-The `two_marker_detect` tool also provides dimensions of windows in pictures, but relies on two ArUco markers placed in opposing corners of the window to do so. This tool has an increased reliability compared to the `demo_tool`. 
+The `two_marker_detect` tool also provides dimensions of windows in pictures, but relies on two ArUco markers placed in opposing corners of the window to do so. This tool has an increased reliability compared to the `demo_tool`.
 
 ## Usage
 
@@ -45,17 +45,30 @@ To use the `test_demo_tool_all_images` tool, follow the below steps:
 1. Navigate to the directory where `test_demo_tool_all_images.py` is located.
 2. Run: `python test_demo_tool_all_images.py`.
 
+To use the `mobile app`, follow the below steps.
+1. Go to [this website](https://chev.me/arucogen/) to generate an ArUco marker, size 100mm, marker ID 0, and in the 4x4 dictionary.
+2. Save the marker and print to scale.
+3. Place marker somewhere near the window to be tested.
+4. Take a picture of the window, make sure that the ArUco marker is fully visible.
+5. Make sure Python and pip are installed.
+6. Navigate to the root of the project directory.
+7. Run the follow command to install dependencies: `pip install -r requirements.txt`
+8. Run the python backend: `python .\back_end\app.py`
+9. Install the apk found in ``
+
 ## Release Notes
 
-Code Milestone 1: The current prototype correctly detects edges of windowpanes in ideal conditions and calculates window dimensions. It is currently a command line tool. 
+Code Milestone 1: The current prototype correctly detects edges of windowpanes in ideal conditions and calculates window dimensions. It is currently a command line tool.
 
 Code Milestone 2: `two_marker_detect` demonstrates improved reliability and accuracy over the `demo_tool`. On branch `Jerron_Branch`, a mobile application is being developed to take pictures, it currently has UI components.
 
 Code Milestone 3: `two_marker_detect` now supports more diverse marker placement, which should improve reliability as users do not have to worry about specific marker placement. On branch `saving_test_runs` a test system has been developed that returns the average accuracy/error of running all test images with the appropriate dimension calculation functions.
 
+Code Milestone 4: The `android application` is runnable, which should improve usability as the application is now mobile.
+
 ## Contributing
 
-As of 2/9 - Very Rough Project Structure is outlined. 
-For Local Development Tools - 
-    Angular: cd front-end, then run npm install angular
-    OpenCv: cd back-end, then run pip install opencv-python
+As of 2/9 - Very Rough Project Structure is outlined.
+For Local Development Tools -
+Angular: cd front-end, then run npm install angular
+OpenCv: cd back-end, then run pip install opencv-python

@@ -4,25 +4,26 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import android.widget.Button
-import androidx.core.net.toUri
 import android.widget.ImageView
 import android.net.Uri
-import androidx.compose.foundation.Image
 import android.util.Log
 
-class dimensions : ComponentActivity() {
+/**
+ * This program shows the photo showing the modified photo from app.py.
+ * Dimensions inherits from ComponentActivity().
+ * @author Jerron Pierro
+ */
+class Dimensions : ComponentActivity() {
+    /**
+     *  This function starts the "Dimensions" activity,
+     *  and will show the photo passed within the bundle.
+     *  @param Bundle
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.results)
-        //enableEdgeToEdge()
 
-        //val uriString = intent.getStringExtra("photo")
-        //val uri = uriString?.toUri()
-        //val uri = uriString?.let{Uri.parse(it)
-        //val bundle: Bundle? = intent.extras
-        //val photoURIString = bundle?.getString("photo")
-        //val uri = photoURIString?.toUri()
-        //val uri = intent.extras?.getString("photo")?.toUri()
+        /* If the photoURI passed is not null, display it. */
         val photoURI: Uri? = intent.getParcelableExtra("photo")
         if (photoURI != null) {
             val imageView : ImageView = findViewById(R.id.imageView)
@@ -31,15 +32,11 @@ class dimensions : ComponentActivity() {
         else {
             Log.e("Dimensions", "could not load photo")
         }
-       // val imageView : ImageView = findViewById(R.id.imageView)
 
-        /* Set layout to index page */
-        //setContentView(R.layout.results)
-        //imageView.setImageURI(uri)
-        //val imageView: ImageView = findViewById(R.id.imageView)
-        //imageView.setImageURI(uri)
+        /* Assign Buttons values */
         val toHome: Button = findViewById(R.id.index)
 
+        /* On the button press, jump to MainActivity.kt */
         toHome.setOnClickListener {
             val intent: Intent = Intent(this, MainActivity::class.java)
             startActivity(intent)

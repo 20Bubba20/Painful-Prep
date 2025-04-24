@@ -17,7 +17,7 @@
         android:theme="@style/Theme.UITest"
         tools:targetApi="31" >
         <activity
-            android:name=".dimensions"
+            android:name=".Dimensions"
             android:exported="false"
             android:label="@string/title_activity_dimensions"
             android:theme="@style/Theme.AppCompat" />
