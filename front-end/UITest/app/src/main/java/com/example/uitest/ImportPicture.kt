@@ -100,7 +100,7 @@ class ImportPicture : ComponentActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http://10.0.2.2:5000/detect")
+            .url("http://10.0.2.2:5000/detect") //Change this if using an Andorid device
             .post(requestBody)
             .build()
 
