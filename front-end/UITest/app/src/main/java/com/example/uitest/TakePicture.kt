@@ -22,17 +22,6 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import android.widget.Button
 import android.content.Intent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import android.net.Uri
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -49,7 +38,7 @@ class TakePicture : AppCompatActivity() {
      *  This function starts the "TakePicture" activity,
      *  and starts the camera on the device, if permissions are given.
      *  If no permissions are given, it prompts the user to allow camera access.
-     *  @param Bundle
+     *  @param savedInstanceState
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,31 +111,16 @@ class TakePicture : AppCompatActivity() {
                     Log.e(MainActivity.TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
-                override fun onImageSaved(output: ImageCapture.OutputFileResults){
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = output.savedUri
                     val msg = "Photo capture succeeded: $savedUri"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(MainActivity.TAG, msg)
 
                     /* If the photoURI returns something jump to Dimensions.kt */
-                    if (savedUri != null) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            try {
-                                val response = uploadToFlask(savedUri)
-                                withContext(Dispatchers.Main) {
-                                    Toast.makeText(this@TakePicture, response ?: "Error", Toast.LENGTH_LONG).show()
-                                    val intent = Intent(this@TakePicture, Dimensions::class.java)
-                                    intent.putExtra("response", response)
-                                    startActivity(intent)
-                                }
-                            } catch (e: Exception) {
-                                Log.e("UploadError", "Camera upload failed", e)
-                                withContext(Dispatchers.Main) {
-                                    Toast.makeText(this@TakePicture, "Upload failed: ${e.message}", Toast.LENGTH_LONG).show()
-                                }
-                            }
-                        }
-                    }
+                    val intent: Intent = Intent(applicationContext, Dimensions::class.java)
+                    intent.putExtra("photo", output.savedUri)
+                    startActivity(intent)
                 }
             }
         )
@@ -185,48 +159,4 @@ class TakePicture : AppCompatActivity() {
         super.onDestroy()
         cameraExecutor.shutdown()
     }
-
-    /**
-     * This function connects to a server and uploads a selected file based on
-     * its URI.
-     * @return String
-     */
-    private fun uploadToFlask(uri: Uri): String? {
-        Log.d("UploadToFlask", "Preparing file from URI: $uri")
-
-        val stream = contentResolver.openInputStream(uri)
-        val fileBytes = stream?.use { it.readBytes() } ?: return null
-
-        Log.d("UploadToFlask", "Read ${fileBytes.size} bytes from file")
-
-        val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
-            .addFormDataPart(
-                "image", "upload.jpg",
-                RequestBody.create("image/jpeg".toMediaTypeOrNull(), fileBytes)
-            )
-            .addFormDataPart("marker_size", "50")
-            .build()
-
-        val client = OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .build()
-
-        val request = Request.Builder()
-            .url("http://${getString(R.string.ip)}5000/detect")
-            .post(requestBody)
-            .build()
-
-        Log.d("UploadToFlask", "Sending request to Flask server")
-
-        val response = client.newCall(request).execute()
-
-        Log.d("UploadToFlask", "Received HTTP ${response.code}")
-
-        return response.body?.string().also {
-            Log.d("UploadToFlask", "Response body: $it")
-        }
-    }
-
 }

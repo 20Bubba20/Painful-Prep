@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     /**
      *  This function starts the "MainActivity" activity,
      *  and will show the photo passed within the bundle.
-     *  @param Bundle
+     *  @param savedInstanceState
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

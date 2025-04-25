@@ -32,20 +32,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7db15192-7864-4501-809c-df6b91453338" name="Changes" comment="Fixed second app creation. Changed permissions prompt to appear on the main screen">
-      <change afterPath="$PROJECT_DIR$/.idea/AndroidProjectSystem.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/UITest/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/UITest/app/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/UITest/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/UITest/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/UITest/app/src/main/java/com/example/uitest/Dimensions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/UITest/app/src/main/java/com/example/uitest/Dimensions.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/UITest/app/src/main/java/com/example/uitest/ImportPicture.kt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/UITest/app/src/main/java/com/example/uitest/ImportPicture.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/UITest/app/src/main/java/com/example/uitest/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/UITest/app/src/main/java/com/example/uitest/MainActivity.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/UITest/app/src/main/java/com/example/uitest/TakePicture.kt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/UITest/app/src/main/java/com/example/uitest/TakePicture.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/UITest/app/src/main/java/com/example/uitest/dimensions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/UITest/app/src/main/java/com/example/uitest/Dimensions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/UITest/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/UITest/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,6 +113,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Android App.UITest.app.executor": "Run",
+    "Android App.app.executor": "Run",
     "Android App.front-end.UITest.app.androidTest.executor": "Run",
     "Android App.front-end.UITest.app.executor": "Run",
     "Android App.front-end.UITest.app.unitTest.executor": "Run",
@@ -136,7 +132,7 @@
     "project.structure.proportion": "0.17",
     "project.structure.side.proportion": "0.2",
     "recommended.upgrade.last.time.stamp": "1744581248632",
-    "settings.editor.selected.configurable": "device.mirroring"
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -148,8 +144,9 @@
       <recent name="C:\Users\Jerron\AndroidStudioProjects\UITest" />
     </key>
   </component>
-  <component name="RunManager" selected="Android App.front-end.UITest.app">
+  <component name="RunManager" selected="Android App.UITest.app">
     <configuration name="UITest.app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+      <module name="UITest.app" />
       <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
@@ -436,8 +433,80 @@
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+      <module name="UITest.app" />
+      <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="ALL_USERS" value="false" />
+      <option name="ALWAYS_INSTALL_WITH_PM" value="false" />
+      <option name="ALLOW_ASSUME_VERIFIED" value="false" />
+      <option name="CLEAR_APP_STORAGE" value="false" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="RESTORE_ENABLED" value="false" />
+      <option name="RESTORE_FILE" value="" />
+      <option name="RESTORE_FRESH_INSTALL_ONLY" value="false" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="DEBUGGER_TYPE" value="Auto" />
+      <Auto>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Auto>
+      <Hybrid>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Hybrid>
+      <Java>
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Java>
+      <Native>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+        <option name="DEBUG_SANDBOX_SDK" value="false" />
+      </Native>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Java/Kotlin Method Sample (legacy)" />
+        <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
+        <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
+      <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="front-end.UITest.app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
-      <module name="front-end.UITest.app" />
+      <module name="UITest.app" />
       <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
@@ -780,19 +849,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/front-end/UITest/app/src/main/java/com/example/uitest/TakePicture.kt</url>
-          <line>130</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/front-end/UITest/app/src/main/java/com/example/uitest/Dimensions.kt</url>
           <line>36</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-function">
           <url>file://$PROJECT_DIR$/front-end/UITest/app/src/main/java/com/example/uitest/MainActivity.kt</url>
-          <line>63</line>
-          <properties class="com.example.uitest.MainActivity.Shared" method="requestPermissions">
+          <line>90</line>
+          <properties class="com.example.uitest.MainActivity.Shared">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>

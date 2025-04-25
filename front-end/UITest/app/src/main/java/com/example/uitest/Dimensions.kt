@@ -17,7 +17,7 @@ class Dimensions : ComponentActivity() {
     /**
      *  This function starts the "Dimensions" activity,
      *  and will show the photo passed within the bundle.
-     *  @param Bundle
+     *  @param savedInstanceState
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

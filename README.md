@@ -54,7 +54,7 @@ To use the `mobile app`, follow the below steps.
 6. Navigate to the root of the project directory.
 7. Run the follow command to install dependencies: `pip install -r requirements.txt`
 8. Run the python backend: `python .\back_end\app.py`
-9. Install the apk found in ``
+9. Install the apk found in `front-end\app-debug.apk`
 
 ## Release Notes
 
@@ -64,7 +64,7 @@ Code Milestone 2: `two_marker_detect` demonstrates improved reliability and accu
 
 Code Milestone 3: `two_marker_detect` now supports more diverse marker placement, which should improve reliability as users do not have to worry about specific marker placement. On branch `saving_test_runs` a test system has been developed that returns the average accuracy/error of running all test images with the appropriate dimension calculation functions.
 
-Code Milestone 4: The `android application` is runnable, which should improve usability as the application is now mobile.
+Code Milestone 4: The front-end is now usable, but has not been linked up to the back-end yet. On `Logan_Branch`, a version of the front-end that connects to the back-end is in development. 
 
 ## Contributing
 
