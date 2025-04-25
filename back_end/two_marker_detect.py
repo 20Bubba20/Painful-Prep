@@ -166,10 +166,6 @@ def get_diff_two_markers_px(
     @return Returns a four-tuple of integer values. The values are returned in this order: 
             Top x coordinate, top y coordinate, bottom x coordinate, bottom y coordinate.
     """
-    # More or less than two markers is not valid.
-    if len(coords) != 8:
-        raise ValueError("Invalid number of markers detected, expected two markers, found: {len(coords) // 2}.")
-    
     # Isolate just the y coordinates.
     y_coords = [coord[1] for coord in coords]
     y_coords_tmp = y_coords.copy()
