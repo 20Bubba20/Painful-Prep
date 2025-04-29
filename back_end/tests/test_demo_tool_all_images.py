@@ -50,6 +50,13 @@ for filename in os.listdir(test_images):
                 if img_id == row["id"]:
                     marker_quantity = int(row["marker_quantity"])
                     break
+
+        #with open(data_csv, newline='') as csvfile:
+        #    reader = csv.DictReader(csvfile)
+        #    for row in reader:
+        #        if img_id == row["id"]:
+        #            ignore_flag = bool(row["ignore"])
+        #            break
             
         """
         Try-Catch block for each detection method that is being tested
