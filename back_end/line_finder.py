@@ -49,6 +49,7 @@ def point_line_distance(point, line_pt1, line_pt2):
 
 
 def line_intersection(line1, line2):
+    """Returns the intersection point of two lines defined by [x1,y1,x2,y2] or [[x1,y1,x2,y2]]."""
     x1, y1, x2, y2 = map(float, line1[0])
     x3, y3, x4, y4 = map(float, line2[0])
 
@@ -82,8 +83,26 @@ def get_four_intersections(intersections, image_shape):
     if len(intersections) < 4:
         return None
 
-    height, width = image_shape[:2]
-    cx, cy = width // 2, height // 2
+    # Filter out extreme outliers
+    h, w = image_shape[:2]
+    buffer_ratio = 0.1
+    buffer_x = w * buffer_ratio
+    buffer_y = h * buffer_ratio
+
+    min_x = -buffer_x
+    max_x = w + buffer_x
+    min_y = -buffer_y
+    max_y = h + buffer_y
+
+    intersections = [
+        (x, y)
+        for (x, y) in intersections
+        if min_x <= x <= max_x and min_y <= y <= max_y
+    ]
+
+    # Get center point from average
+    cx = sum(p[0] for p in intersections)/len(intersections)
+    cy = sum(p[1] for p in intersections)/len(intersections)
 
     quadrants = {
         "tl": [],
@@ -128,31 +147,46 @@ def get_intersections(lines):
 def fit_quadrilateral(intersections):
     """
     Attempts to fit a 4-point quadrilateral from the given intersection points.
-    Uses convex hull and polygon approximation.
+    Handles both 4 points (normal case) and 3 points (triangle case by mirroring).
     """
-    # Ensure shape is correct for OpenCV functions
+    if intersections is None or len(intersections) < 4:
+        print("Not enough points to form a quadrilateral.")
+        return None
+
+    # Convert intersections into (N,1,2) format and ensure float32
     intersections = np.array(intersections, dtype=np.float32).reshape(-1, 1, 2)
 
-    # Compute convex hull
-    hull = cv.convexHull(intersections)
-
-    # Approximate polygon from hull
-    epsilon = 0.02 * cv.arcLength(hull, True)
-    approx = cv.approxPolyDP(hull, epsilon, True)
-
-    # print("Quadrilateral found:", approx.reshape(-1, 2))
-    return approx  # Still in (N, 1, 2) format, as expected by OpenCV drawing funcs
+    if len(intersections) == 4:
+        # Four points, normal case
+        hull = cv.convexHull(intersections)
+        epsilon = 0.02 * cv.arcLength(hull, True)
+        approx = cv.approxPolyDP(hull, epsilon, True)
+        return approx
 
 
 def line_midpoint(l):
     x1, y1, x2, y2 = l
-    return ((x1 + x2) / 2, (y1 + y2) / 2)
+    return (x1 + x2) / 2, (y1 + y2) / 2
 
 
 def angular_distance(a, b):
     """Returns the shortest distance between two angles (degrees, 0–180)"""
     diff = abs(a - b) % 180
     return min(diff, 180 - diff)
+
+
+def average_line_midpoint(lines, length_thresh=100):
+    mids = []
+    for l in lines:
+        x1, y1, x2, y2 = l[0]
+        if math.hypot(x2 - x1, y2 - y1) < length_thresh:
+            continue
+        mids.append(line_midpoint((x1, y1, x2, y2)))
+    if not mids:
+        return None
+    cx = sum(p[0] for p in mids) / len(mids)
+    cy = sum(p[1] for p in mids) / len(mids)
+    return cx, cy
 
 
 def select_window_edges(lines, image_shape, length_thresh=100, angle_tolerance=45):
@@ -164,16 +198,7 @@ def select_window_edges(lines, image_shape, length_thresh=100, angle_tolerance=4
     h, w = image_shape[:2]
 
     # 1) Estimate the window center by averaging midpoints of long lines
-    mids = []
-    for l in lines:
-        x1,y1,x2,y2 = l[0]
-        if math.hypot(x2-x1, y2-y1) < length_thresh:
-            continue
-        mids.append(line_midpoint((x1,y1,x2,y2)))
-    if not mids:
-        return None
-    cx = sum(p[0] for p in mids)/len(mids)
-    cy = sum(p[1] for p in mids)/len(mids)
+    cx, cy = average_line_midpoint(lines, length_thresh)
 
     # 2) Split lines into four regions
     regions = {"top": [], "right": [], "bottom": [], "left": []}
@@ -202,7 +227,6 @@ def select_window_edges(lines, image_shape, length_thresh=100, angle_tolerance=4
         # Filter to only those within angle_tolerance of expected
         items = [itm for itm in items if angular_distance(itm[1], expected) <= angle_tolerance]
 
-
         if not items:
             return None
 
@@ -227,6 +251,7 @@ def select_window_edges(lines, image_shape, length_thresh=100, angle_tolerance=4
     # Return four lines in [top, right, bottom, left] order, each shaped (1,4)
     lines = [np.array([selected[r]], dtype=np.int32) for r in ("top", "right", "bottom", "left")]
     return (cx, cy), lines
+
 
 # -------------------------
 # Main processing pipeline:
@@ -259,8 +284,8 @@ def process_lines(combined_image, show_output=False):
     if result is not None:
         midpoint, merged_lines = result
     else:
-        print("Line Filter Error")
-        return None, None
+        merged_lines = filtered_lines
+        midpoint = average_line_midpoint(filtered_lines)
 
     if show_output is True:
         show_lines(merged_lines, combined_image, intersections=[midpoint])
@@ -276,7 +301,7 @@ def process_lines(combined_image, show_output=False):
     if show_output is True:
         show_lines(None, combined_image, intersections=intersections)
 
-    # Redyuce to four intersections to find quad
+    # Reduce to four intersections to find quad
     reduced_intersections = get_four_intersections(intersections, combined_image.shape)
 
     # Fit a quadrilateral using the intersection points
@@ -288,6 +313,7 @@ def process_lines(combined_image, show_output=False):
 
 
 def show_lines(lines, image, intersections=None, quad=None):
+    """Displays lines, points, and/or a quad on the given image in a new window."""
     # Make a copy of the input so we don't modify the original
     if len(image.shape) == 2:
         # Grayscale → BGR

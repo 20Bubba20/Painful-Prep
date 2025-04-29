@@ -13,7 +13,8 @@ import line_finder
 
 MARKER_LENGTH_MM = 100
 MM_IN_RATIO = 25.4
-OUTPUT_PASSES = False
+OUTPUT_PASSES = True
+
 
 def apply_dog(image: np.ndarray, sigma1=1.0, sigma2=2.0) -> np.ndarray:
     blur1 = cv.GaussianBlur(image, (0, 0), sigma1)
@@ -24,6 +25,7 @@ def apply_dog(image: np.ndarray, sigma1=1.0, sigma2=2.0) -> np.ndarray:
     dog = cv.normalize(dog, None, 0, 255, cv.NORM_MINMAX).astype(np.uint8)
 
     return dog
+
 
 def apply_canny(image: np.ndarray):
 
@@ -91,7 +93,8 @@ def find_windowpane(path: Path) -> np.ndarray:
         cv.imwrite("5_dog_final.jpg", dog_final)
         cv.imwrite("6_combined.jpg", combined_image)
 
-    quad, lines_image = line_finder.process_lines(combined_image, show_output=False)
+    # Pass DoG output to Hough Lines pipeline
+    quad, lines_image = line_finder.process_lines(combined_image, show_output=True)
 
     if quad is not None:
         # Ensure quad is a NumPy array of type int32
