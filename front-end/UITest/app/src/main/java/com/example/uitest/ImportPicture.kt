@@ -40,6 +40,7 @@ class ImportPicture : ComponentActivity() {
                         Toast.makeText(this@ImportPicture, response ?: "Error", Toast.LENGTH_LONG).show()
 
                         val intent = Intent(this@ImportPicture, dimensions::class.java)
+                        intent.putExtra("photo", uri)
                         intent.putExtra("response", response)
                         startActivity(intent)
                     }

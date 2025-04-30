@@ -128,6 +128,7 @@ class TakePicture : AppCompatActivity() {
                                 withContext(Dispatchers.Main) {
                                     Toast.makeText(this@TakePicture, response ?: "Error", Toast.LENGTH_LONG).show()
                                     val intent = Intent(this@TakePicture, dimensions::class.java)
+                                    intent.putExtra("photo", savedUri)
                                     intent.putExtra("response", response)
                                     startActivity(intent)
                                 }
