@@ -34,5 +34,5 @@ class Pipeline:
         scale = self.marker_detector.get_scale(image)
         corners = self.window_detector.detect(image)
         self.dimension_calculator.scale_mm = scale
-        height, width = self.dimension_calculator(corners)
+        height, width = self.dimension_calculator.calculate(corners)
         return height, width

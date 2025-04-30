@@ -1,8 +1,10 @@
 from typing import Literal
 import cv2 as cv
 import numpy as np
-import back_end.interfaces as interfaces
+import interfaces
 import custom_exceptions
+import two_marker_detect
+import pipeline
 
 class TwoMarkerDetector():
     def __init__(self, marker_size_mm, marker_type, context: interfaces.StageContext):
@@ -93,27 +95,9 @@ class TwoMarkerDetector():
         
         self._corners = corners
 
-        scale_px = (self._get_scale(corners[0][0]) + self._get_scale(corners[1][0])) / 2
+        scale_px = (two_marker_detect.get_scale(corners[0][0]) + two_marker_detect.get_scale(corners[1][0])) / 2
         scale_mm = self.marker_size_mm / scale_px
         return scale_mm
-
-    def _get_scale(corners: np.ndarray) -> float:
-        "@brief Private method, do not use!"
-        displ_0 = corners[0] - corners[1]
-        displ_1 = corners[1] - corners[2]
-        displ_2 = corners[2] - corners[3]
-        displ_3 = corners[3] - corners[1]
-
-        norms = []
-
-        norms.append(np.linalg.norm(displ_0))
-        norms.append(np.linalg.norm(displ_1))
-        norms.append(np.linalg.norm(displ_2))
-        norms.append(np.linalg.norm(displ_3))
-
-        scale = np.average(norms)
-
-        return scale
     
     def detect(self, image: np.ndarray) -> np.ndarray:
         if not self._corners:
@@ -122,7 +106,7 @@ class TwoMarkerDetector():
     
     def calculate(self, window_corners: np.ndarray) -> tuple[float, float]:
         # Clean corner coordinates.
-        corners = [arr.squeeze() for arr in corners]
+        corners = [arr.squeeze() for arr in window_corners]
         corners = [[[round(x) for x in row] for row in marker] for marker in corners]
         corner_coords = np.concatenate(corners)
 
@@ -139,10 +123,10 @@ class TwoMarkerDetector():
 
         # Top left, bottom right diagonal case.
         if is_top_marker_left:
-            t_coord_x, t_coord_y, b_coord_x, b_coord_y = self._get_diff_two_markers_px(corner_coords, "TLBR")
+            t_coord_x, t_coord_y, b_coord_x, b_coord_y = two_marker_detect.get_diff_two_markers_px(corner_coords, "TLBR")
         # Top right, bottom left diagonal case.
         else:
-            t_coord_x, t_coord_y, b_coord_x, b_coord_y = self._get_diff_two_markers_px(corner_coords, "TRBL")
+            t_coord_x, t_coord_y, b_coord_x, b_coord_y = two_marker_detect.get_diff_two_markers_px(corner_coords, "TRBL")
 
         # Get width and height in pixels.
         h_px = abs(t_coord_x - b_coord_x)
@@ -151,62 +135,10 @@ class TwoMarkerDetector():
         h_in = (h_px * self.scale_mm) / self.MM_IN_RATIO
         w_in = (w_px * self.scale_mm) / self.MM_IN_RATIO
 
-        return h_in, w_in
+        return h_in + 0.25, w_in + 0.25
 
-    def _get_diff_two_markers_px(
-        coords: list[tuple[int, int]], 
-        diagonal: Literal["TLBR", "TRBL"] = "TLBR"
-        ) -> tuple[int, int, int, int]:
-        "Private method for calculating height and width, do not use!"
-
-        # Isolate just the y coordinates.
-        y_coords = [coord[1] for coord in coords]
-        y_coords_tmp = y_coords.copy()
-
-        # Find the two highest vectors.
-        y_1 = min(y_coords_tmp)
-        y_1_idx = y_coords.index(y_1)
-        y_coords_tmp.remove(y_1)
-
-        y_2 = min(y_coords_tmp)
-        y_2_idx = y_coords.index(y_2)
-
-        # Find the bottom most two vectors.
-        y_3 = max(y_coords_tmp)
-        y_3_idx = y_coords.index(y_3)
-        y_coords_tmp.remove(y_3)
-
-        y_4 = max(y_coords_tmp)
-        y_4_idx = y_coords.index(y_4)
-
-        if diagonal == "TLBR":
-            # Find the top left most vector.
-            if coords[y_1_idx][0] < coords[y_2_idx][0]:
-                tl_coord_x, tl_coord_y = coords[y_1_idx]
-            else:
-                tl_coord_x, tl_coord_y = coords[y_2_idx]
-
-            # Check which one is the bottom right vector.
-            if coords[y_3_idx][0] > coords[y_4_idx][0]:
-                br_coord_x, br_coord_y = coords[y_3_idx]
-            else:
-                br_coord_x, br_coord_y = coords[y_4_idx]
-
-            return tl_coord_x, tl_coord_y, br_coord_x, br_coord_y
-
-        elif diagonal == "TRBL":
-            # Find the top right most vector.
-            if coords[y_1_idx][0] > coords[y_2_idx][0]:
-                tr_coord_x, tr_coord_y = coords[y_1_idx]
-            else:
-                tr_coord_x, tr_coord_y = coords[y_2_idx]
-
-            # Check which one is the bottom left most vector.
-            if coords[y_3_idx][0] < coords[y_4_idx][0]:
-                bl_coord_x, bl_coord_y = coords[y_3_idx]
-            else:
-                bl_coord_x, bl_coord_y = coords[y_4_idx]
-
-            return tr_coord_x, tr_coord_y, bl_coord_x, bl_coord_y
-        else:
-            raise ValueError("Unable to find diagonal for calculation, please take or upload another image.")
+if __name__ == "__main__":
+    detector = TwoMarkerDetector(20, "AprilTag", interfaces.StageContext())
+    image = cv.imread("/home/tminnich/projects/capstone/Painful-Prep/back_end/tests/test-images/img_047.JPG", cv.IMREAD_COLOR_BGR)
+    my_pipeline = pipeline.Pipeline(detector, detector, detector)
+    print(my_pipeline.run(image))
