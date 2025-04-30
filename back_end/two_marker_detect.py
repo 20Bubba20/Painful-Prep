@@ -13,6 +13,7 @@ Usage:
 
 import cv2 as cv
 import numpy as np
+import math
 import sys
 import os
 from pathlib import Path
@@ -23,7 +24,8 @@ from demo_tool import MM_IN_RATIO
 def calculate_two_markers(
         path: Path, 
         marker_size_mm: int,
-        marker_type: Literal["ArUco", "AprilTag"]="ArUco"
+        marker_type: Literal["ArUco", "AprilTag"]="ArUco",
+        border_offset_in: float = 0
     ) -> tuple[int, int]:
     """
     @brief Finds the width and height of a window using two ArUco markers.
@@ -115,8 +117,12 @@ def calculate_two_markers(
     # Convert width and height to inches.
     scale_mm = marker_size_mm / scale_px
 
-    h_in = (h_px * scale_mm) / MM_IN_RATIO
-    w_in = (w_px * scale_mm) / MM_IN_RATIO
+    h_in = (h_px * scale_mm) / MM_IN_RATIO + border_offset_in * 2
+    w_in = (w_px * scale_mm) / MM_IN_RATIO + border_offset_in * 2
+
+    # Always round up to the nearest half inch.
+    h_in = math.ceil(h_in * 2) / 2
+    w_in = math.ceil(w_in * 2) / 2
 
     return h_in, w_in
 
