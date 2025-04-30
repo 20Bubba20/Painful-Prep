@@ -5,6 +5,7 @@ import interfaces
 import custom_exceptions
 import two_marker_detect
 import pipeline
+import math
 
 class TwoMarkerDetector():
     def __init__(self, marker_size_mm, marker_type, context: interfaces.StageContext):
@@ -15,6 +16,7 @@ class TwoMarkerDetector():
         self._corners = None
         self.MM_IN_RATIO = 25.4
         self.scale_mm: float | None = None
+        self._border_size_in = 0.125
     
     def get_scale(self, image: np.ndarray) -> float:
         """
@@ -131,11 +133,15 @@ class TwoMarkerDetector():
         # Get width and height in pixels.
         h_px = abs(t_coord_x - b_coord_x)
         w_px = abs(t_coord_y - b_coord_y)
+        
+        h_in = (h_px * self.scale_mm) / self.MM_IN_RATIO + self._border_size_in * 2
+        w_in = (w_px * self.scale_mm) / self.MM_IN_RATIO + self._border_size_in * 2
 
-        h_in = (h_px * self.scale_mm) / self.MM_IN_RATIO
-        w_in = (w_px * self.scale_mm) / self.MM_IN_RATIO
+        # Always round up to the nearest half inch.
+        h_in = math.ceil(h_in * 2) / 2
+        w_in = math.ceil(w_in * 2) / 2
 
-        return h_in + 0.25, w_in + 0.25
+        return h_in, w_in
 
 if __name__ == "__main__":
     detector = TwoMarkerDetector(20, "AprilTag", interfaces.StageContext())
