@@ -262,9 +262,15 @@ def select_window_edges(lines, image, length_thresh=100, angle_tolerance=45):
 
             # Mirror opposite line over image center
             ox1, oy1, ox2, oy2 = opposite_line
-            mx1, my1 = w - ox1, h - oy1
-            mx2, my2 = w - ox2, h - oy2
-            selected[region] = [mx1, my1, mx2, my2]
+
+            if region in ("top", "bottom"):
+                mx1, my1 = ox1, h - oy1
+                mx2, my2 = ox2, h - oy2
+            else:
+                mx1, my1 = w - ox1, oy1
+                mx2, my2 = w - ox2, oy2
+
+            selected[region] = [mx2, my2, mx1, my1]  # swapped
 
     # Now selected has 4 valid lines (after fallback filling)
 
