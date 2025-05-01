@@ -1,3 +1,18 @@
+"""
+@file two_marker_classes.py
+@brief Class-based version of two marker detect to be passed to pipeline class.
+
+TwoMarkerDetector is a class that implements the MarkerDetector, WindowDetector,
+and DimensionCalculator protocols.
+
+Usage:
+    detector = TwoMarkerDetector(20, "AprilTag", interfaces.StageContext())
+    image = cv.imread("path/to/image", cv.IMREAD_COLOR_BGR)
+    my_pipeline = pipeline.Pipeline(detector, detector, detector)
+
+@note The marker size must be provided in millimeters (mm).
+"""
+
 from typing import Literal
 import cv2 as cv
 import numpy as np

@@ -32,9 +32,20 @@ def calculate_two_markers(
 
     This function detects exactly two ArUco markers in an image, computes the scale 
     based on their known size, and calculates the dimensions of the window in inches.
+    Calculation involves find the farthest apart marker corners, and then obtaining
+    the x and y pixel offset. A pixel scale of the markers is used to determine the 
+    real life size difference in inches. Due to camera distortion and suboptimal 
+    camera angles, the final computed dimension is rounded up to the nearest half 
+    inch.
 
     @param path Path to the image file.
     @param marker_size_mm Known size of the marker in millimeters.
+    @param marker_type Defines the specific markers in the image. Has to be a literal
+           value either "ArUco" or "AprilTag". Defaults to ArUco markers. 
+    @param border_offset_in Defines the size of the white border around the marker itself.
+           White borders help in improving detection of markers and the border size is
+           used for calculating the dimensions of the window. Defaults to 0. Border size
+           has to be provided in inches.
 
     @return Tuple (width, height) of the window in inches. Returns None if the number 
             of markers detected is not exactly two.

@@ -1,3 +1,12 @@
+"""
+@file pipeline.py
+@brief Class to use as pipeline for image processing.
+
+Pipeline is a class that loosely couples separate stages of image processing.
+The Pipeline should make code more testable and easier to replace individual
+components.
+"""
+
 from dataclasses import dataclass
 import numpy as np
 from interfaces import *
@@ -31,6 +40,7 @@ class Pipeline:
         self.dimension_calculator.context = self.contexts.dimension_calculator_context
     
     def run(self, image: np.ndarray) -> tuple[float, float]:
+        'Run the pipeline.'
         scale = self.marker_detector.get_scale(image)
         corners = self.window_detector.detect(image)
         self.dimension_calculator.scale_mm = scale
