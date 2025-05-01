@@ -165,7 +165,7 @@ if accuracy_scores:
    print(f"Overall Accuracy: {overall_accuracy * 100:.2f}%")
 
    if one_marker_attempts:
-       avg_one_marker_accuracy = round(sum(one_marker_accuracies) / one_marker_attempts, 2) if one_marker_accuracies else 0
+       avg_one_marker_accuracy = round(sum(one_marker_accuracies) / len(one_marker_accuracies), 2) if one_marker_accuracies else 0
        reliability_one_marker = round((one_marker_success / one_marker_attempts) * 100, 2)
        print(f"One Marker - Avg Accuracy: {avg_one_marker_accuracy * 100:.2f}% | Reliability: {reliability_one_marker:.2f}%")
    if two_marker_attempts:
