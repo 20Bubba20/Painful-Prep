@@ -189,18 +189,18 @@ def average_line_midpoint(lines, length_thresh=100):
     return cx, cy
 
 
-def select_window_edges(lines, image_shape, length_thresh=100, angle_tolerance=45):
+def select_window_edges(lines, image, length_thresh=100, angle_tolerance=45):
     """
     From a set of Hough lines [[x1,y1,x2,y2],...], pick exactly four:
      - One in each region (top, right, bottom, left) relative to the window center.
      - Only consider lines within `angle_tolerance` degrees of the expected orientation.
     """
-    h, w = image_shape[:2]
+    h, w = image.shape
 
-    # 1) Estimate the window center by averaging midpoints of long lines
+    # Estimate the window center by averaging midpoints of long lines
     cx, cy = average_line_midpoint(lines, length_thresh)
 
-    # 2) Split lines into four regions
+    # Split lines into four regions
     regions = {"top": [], "right": [], "bottom": [], "left": []}
     for l in lines:
         x1,y1,x2,y2 = l[0]
@@ -218,37 +218,57 @@ def select_window_edges(lines, image_shape, length_thresh=100, angle_tolerance=4
 
     selected = {}
     for region, items in regions.items():
-        if not items:
-            return None
-
         # Determine expected angle for this region
         expected = 0 if region in ("top", "bottom") else 90
 
         # Filter to only those within angle_tolerance of expected
         items = [itm for itm in items if angular_distance(itm[1], expected) <= angle_tolerance]
 
-        if not items:
-            return None
+        if items:
+            # Compute mode angle (integer binning)
+            angles = [int(round(a)) for (_, a, _) in items]
+            mode_angle = Counter(angles).most_common(1)[0][0]
 
-        # Compute mode angle (integer binning)
-        angles = [int(round(a)) for (_, a, _) in items]
-        mode_angle = Counter(angles).most_common(1)[0][0]
+            # Candidates matching mode_angle (±1°)
+            candidates = [(l, mp) for (l, a, mp) in items
+                          if abs(int(round(a)) - mode_angle) <= 1]
 
-        # Candidates matching mode_angle (±1°)
-        candidates = [(l, mp) for (l, a, mp) in items
-                      if abs(int(round(a)) - mode_angle) <= 1]
-        if not candidates:
-            return None
+            if candidates:
+                # Pick the one farthest from center along region axis
+                if region in ("top", "bottom"):
+                    best = max(candidates, key=lambda t: abs(t[1][1] - cy))
+                else:
+                    best = max(candidates, key=lambda t: abs(t[1][0] - cx))
 
-        # Pick the one farthest from center along region axis
-        if region in ("top", "bottom"):
-            best = max(candidates, key=lambda t: abs(t[1][1] - cy))
+                selected[region] = best[0]
+            else:
+                selected[region] = None  # Mark as empty
         else:
-            best = max(candidates, key=lambda t: abs(t[1][0] - cx))
+            selected[region] = None  # Mark as empty
 
-        selected[region] = best[0]
+    # After looping: handle empty regions
+    for region, line in selected.items():
+        if line is None:
+            opposite = {
+                "top": "bottom",
+                "bottom": "top",
+                "left": "right",
+                "right": "left"
+            }[region]
 
-    # Return four lines in [top, right, bottom, left] order, each shaped (1,4)
+            opposite_line = selected.get(opposite)
+            if opposite_line is None:
+                return None  # Both this and opposite are missing → fail
+
+            # Mirror opposite line over image center
+            ox1, oy1, ox2, oy2 = opposite_line
+            mx1, my1 = w - ox1, h - oy1
+            mx2, my2 = w - ox2, h - oy2
+            selected[region] = [mx1, my1, mx2, my2]
+
+    # Now selected has 4 valid lines (after fallback filling)
+
+    # Return in [top, right, bottom, left] order
     lines = [np.array([selected[r]], dtype=np.int32) for r in ("top", "right", "bottom", "left")]
     return (cx, cy), lines
 
@@ -280,7 +300,7 @@ def process_lines(combined_image, show_output=False):
         show_lines(filtered_lines, combined_image)
 
     # Find edge lines in each half of the image
-    result = select_window_edges(filtered_lines, combined_image.shape, length_thresh=max(combined_image.shape)/4)
+    result = select_window_edges(filtered_lines, combined_image, length_thresh=max(combined_image.shape)/5)
     if result is not None:
         midpoint, merged_lines = result
     else:
