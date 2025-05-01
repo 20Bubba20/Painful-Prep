@@ -24,7 +24,7 @@ with open(data_csv, newline='') as csvfile:
         }
 
 # creating the results list to be put into the csv file later
-#results = []
+results = []
 accuracy_scores = []
 one_marker_accuracies = []
 two_marker_accuracies = []
@@ -42,7 +42,7 @@ def run_demo_tool():
     """
 
     #global variables
-    global one_marker_attempts, one_marker_success, one_marker_accuracies, accuracy_scores
+    global one_marker_attempts, one_marker_success, one_marker_accuracies, accuracy_scores, results
 
     print("Results for one marker deteciton using demo_tool: ")
     for filename in os.listdir(test_images):
@@ -87,14 +87,18 @@ def run_demo_tool():
                     average_error = (width_error + height_error) / 2
 
                     #calculates accuracy score
-                    accuracy_score = round(1-(average_error / 100), 2)
+                    accuracy_score = round(max(0.0, 1-(average_error / 100)), 2)
 
                     one_marker_accuracies.append(accuracy_score)
                     accuracy_scores.append(accuracy_score)
                     one_marker_success += 1
 
+                    #calculate the difference between expected and measured values
+                    diff_width = round(measured_width - expected_width, 2)
+                    diff_height = round(measured_height - expected_height, 2)
+
                     #appends the results to the results list
-                    #results.append([img_id, measured_height, measured_width, expected_height, expected_width, accuracy_score])
+                    results.append([img_id, measured_width, measured_height, expected_width, expected_height, diff_width, diff_height, accuracy_score, "demo_tool"])
 
                 except Exception as e:
                     print(f"Error processing {img_id}: {e}")
@@ -115,7 +119,7 @@ def run_two_marker_detect():
     print("Results for two marker detection using two_marker_detect: ")
 
     #global variables
-    global two_marker_attempts, two_marker_success, two_marker_accuracies, accuracy_scores
+    global two_marker_attempts, two_marker_success, two_marker_accuracies, accuracy_scores, results
 
     for filename in os.listdir(test_images):
         if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
@@ -170,11 +174,17 @@ def run_two_marker_detect():
                     average_error = (width_error + height_error) / 2
 
                     #generate accuracy of the window detection
-                    accuracy = round(1 - (average_error / 100), 2)
+                    accuracy = round(max(0.0, 1 - (average_error / 100)), 2)
 
                     two_marker_accuracies.append(accuracy)
                     accuracy_scores.append(accuracy)
                     two_marker_success += 1
+
+                    #calculate the difference between expected and measured values
+                    diff_width = round(measured_width - expected_width, 2)
+                    diff_height = round(measured_height - expected_height, 2)
+
+                    results.append([img_id, measured_width, measured_height, expected_width, expected_height, diff_width, diff_height, accuracy, "two_marker"])
 
                 except Exception as e:
                     print(f"Error processing {img_id}: {e}")
@@ -193,7 +203,7 @@ def run_demo_tool_v2():
     print("Results for one marker detection using demo_tool_v2:")
 
     #global variables
-    global one_marker_v2_attempts, one_marker_v2_success, one_marker_v2_accuracies, accuracy_scores
+    global one_marker_v2_attempts, one_marker_v2_success, one_marker_v2_accuracies, accuracy_scores, results
 
     for filename in os.listdir(test_images):
         if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
@@ -237,14 +247,18 @@ def run_demo_tool_v2():
                     average_error = (width_error + height_error) / 2
 
                     #calculates accuracy score
-                    accuracy_score = round(1-(average_error / 100), 2)
+                    accuracy_score = round(max(0.0, 1-(average_error / 100)), 2)
 
                     one_marker_v2_accuracies.append(accuracy_score)
                     accuracy_scores.append(accuracy_score)
                     one_marker_v2_success += 1
+                    
+                    #calculate the difference between expected and measured values
+                    diff_width = round(measured_width - expected_width, 2)
+                    diff_height = round(measured_height - expected_height, 2)
 
                     #appends the results to the results list
-                    #results.append([img_id, measured_height, measured_width, expected_height, expected_width, accuracy_score])
+                    results.append([img_id, measured_width, measured_height, expected_width, expected_height, diff_width, diff_height, accuracy_score, "demo_tool_v2"])
 
                 except Exception as e:
                     print(f"Error processing {img_id}: {e}")
@@ -256,8 +270,56 @@ def run_demo_tool_v2():
     else:
         print("No one marker images processed.")
 
+def report_best_and_worst_results(results):
+    """
+    Report the best case (image with the smallest absolute sum of diff_width and diff_height)
+    and the worst case (image with the largest absolute sum of diff_width and diff_height) 
+    """
+    if not results:
+        print("No results to report.")
+        return
+    
+    def total_diff(result):
+        return abs(result[5]) + abs(result[6])
+    
+    best_case = min(results, key=total_diff)
+    worst_case = max(results, key=total_diff)
+
+    print("\nBest Case (lowest total difference):")
+    print(f"  ID: {best_case[0]} | Method: {best_case[8]}")
+    print(f"  Measured: {best_case[1]} x {best_case[2]} | Expected: {best_case[3]} x {best_case[4]}")
+    print(f"  Diffs => Height: {best_case[5]}, Width: {best_case[6]} | Accuracy: {best_case[7]*100:.2f}%")
+
+    print("\nWorst Case (highest total difference):")
+    print(f"  ID: {worst_case[0]} | Method: {worst_case[8]}")
+    print(f"  Measured: {worst_case[1]} x {worst_case[2]} | Expected: {worst_case[3]} x {worst_case[4]}")
+    print(f"  Diffs => Height: {worst_case[5]}, Width: {worst_case[6]} | Accuracy: {worst_case[7]*100:.2f}%")
+
+
+def save_results(filename, data):
+    """
+    Save the results to a CSV file
+    """
+    header = [
+        "id", 
+        "measured_width",
+        "measured_height",
+        "expected_width",
+        "expected_height",
+        "diff_width",
+        "diff_height",
+        "accuracy_score",
+        "method"
+    ]
+    with open(filename, mode="w", newline="" ) as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        writer.writerows(data)
+
 
 if __name__ == "__main__":
     run_demo_tool()
     run_two_marker_detect()
     run_demo_tool_v2()
+    report_best_and_worst_results(results)
+    save_results("test-images/results.csv", results)
