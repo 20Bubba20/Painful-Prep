@@ -13,6 +13,7 @@ Usage:
 
 import cv2 as cv
 import numpy as np
+import math
 import sys
 import os
 from pathlib import Path
@@ -23,16 +24,28 @@ from demo_tool import MM_IN_RATIO
 def calculate_two_markers(
         path: Path, 
         marker_size_mm: int,
-        marker_type: Literal["ArUco", "AprilTag"]="ArUco"
+        marker_type: Literal["ArUco", "AprilTag"]="ArUco",
+        border_offset_in: float = 0
     ) -> tuple[int, int]:
     """
     @brief Finds the width and height of a window using two ArUco markers.
 
     This function detects exactly two ArUco markers in an image, computes the scale 
     based on their known size, and calculates the dimensions of the window in inches.
+    Calculation involves find the farthest apart marker corners, and then obtaining
+    the x and y pixel offset. A pixel scale of the markers is used to determine the 
+    real life size difference in inches. Due to camera distortion and suboptimal 
+    camera angles, the final computed dimension is rounded up to the nearest half 
+    inch.
 
     @param path Path to the image file.
     @param marker_size_mm Known size of the marker in millimeters.
+    @param marker_type Defines the specific markers in the image. Has to be a literal
+           value either "ArUco" or "AprilTag". Defaults to ArUco markers. 
+    @param border_offset_in Defines the size of the white border around the marker itself.
+           White borders help in improving detection of markers and the border size is
+           used for calculating the dimensions of the window. Defaults to 0. Border size
+           has to be provided in inches.
 
     @return Tuple (width, height) of the window in inches. Returns None if the number 
             of markers detected is not exactly two.
@@ -115,8 +128,12 @@ def calculate_two_markers(
     # Convert width and height to inches.
     scale_mm = marker_size_mm / scale_px
 
-    h_in = (h_px * scale_mm) / MM_IN_RATIO
-    w_in = (w_px * scale_mm) / MM_IN_RATIO
+    h_in = (h_px * scale_mm) / MM_IN_RATIO + border_offset_in * 2
+    w_in = (w_px * scale_mm) / MM_IN_RATIO + border_offset_in * 2
+
+    # Always round up to the nearest half inch.
+    h_in = math.ceil(h_in * 2) / 2
+    w_in = math.ceil(w_in * 2) / 2
 
     return h_in, w_in
 
@@ -237,7 +254,7 @@ if __name__ == "__main__":
         exit()
 
     try:
-        width, height = calculate_two_markers(sys.argv[1], int(sys.argv[2]))
+        width, height = calculate_two_markers(sys.argv[1], int(sys.argv[2]), 'AprilTag', 0.125)
         print(f"Width: {width:.2f} in")
         print(f"Height: {height:.2f} in")
     except ValueError as e:
