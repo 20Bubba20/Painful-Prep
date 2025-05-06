@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Painless Prep App</string>
+    <string name="title_activity_import_picture">ImportPicture</string>
+    <string name="title_activity_take_picture">takePicture</string>
+    <string name="title_activity_dimensions">Dimensions</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="to_index">Home</string>
+    <string name="SaveDirectory">Pictures/PainlessPrep</string>
+    <string name="import_photo">Import Photo</string>
+    <string name="Logo">PainlessPrepLogo</string>
+    <string name="ip">11.22.15.72</string>
+</resources>
