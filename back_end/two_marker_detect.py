@@ -255,7 +255,7 @@ if __name__ == "__main__":
         exit()
 
     try:
-        width, height = calculate_two_markers(sys.argv[1], int(sys.argv[2]), 'ArUco', 0.0)
+        width, height = calculate_two_markers(sys.argv[1], int(sys.argv[2]), 'AprilTag', 0.125)
         print(f"Width: {width:.2f} in")
         print(f"Height: {height:.2f} in")
     except ValueError as e:
