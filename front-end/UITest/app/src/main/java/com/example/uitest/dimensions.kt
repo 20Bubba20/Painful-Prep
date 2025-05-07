@@ -38,7 +38,7 @@ class dimensions : ComponentActivity() {
                 dimensionsView.text = "Width: %.2f in\nHeight: %.2f in".format(width, height)
             } catch (e: Exception) {
                 Log.e("Dimensions", "Error parsing JSON", e)
-                dimensionsView.text = "Error parsing dimensions"
+                dimensionsView.text = "Error: Unable to detect markers!"
             }
         } else {
             dimensionsView.text = "No response received"
