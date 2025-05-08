@@ -4,8 +4,8 @@ import csv
 import numpy as np
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-import demo_tool
-import demo_tool_v2
+import one_marker_detect as one_marker_detect
+import one_marker_detect_v2 as one_marker_detect_v2
 import two_marker_detect
 
 # paths to the images folder, data.csv and results.csv
@@ -69,10 +69,10 @@ def run_demo_tool():
                 one_marker_attempts += 1
                 try:
                     #find corners of the windowpane
-                    corners_array = demo_tool.find_windowpane(img_path)
+                    corners_array = one_marker_detect.find_windowpane(img_path)
 
                     #gets width and height of the windowpane
-                    raw_width, raw_height = demo_tool.get_window_dimensions(img_path, corners_array)
+                    raw_width, raw_height = one_marker_detect.get_window_dimensions(img_path, corners_array)
 
                     measured_width = round(raw_width, 2)
                     measured_height = round(raw_height, 2)
@@ -229,10 +229,10 @@ def run_demo_tool_v2():
                 one_marker_v2_attempts += 1
                 try:
                     #find corners of the windowpane
-                    corners_array = demo_tool_v2.find_windowpane(img_path)
+                    corners_array = one_marker_detect_v2.find_windowpane(img_path)
 
                     #gets width and height of the windowpane
-                    raw_width, raw_height = demo_tool_v2.get_window_dimensions(img_path, corners_array)
+                    raw_width, raw_height = one_marker_detect_v2.get_window_dimensions(img_path, corners_array)
 
                     measured_width = round(raw_width, 2)
                     measured_height = round(raw_height, 2)
