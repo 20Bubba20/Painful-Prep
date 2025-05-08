@@ -14,13 +14,16 @@ import kotlinx.coroutines.*
 import android.net.Uri
 import java.util.concurrent.TimeUnit
 
-
+/**
+ *  This program class allows for a picture to be imported
+ *  and sends the result to a server to run calculations.
+ *  @author Jerron Pierro and Logan Johnson
+ */
 class ImportPicture : ComponentActivity() {
-
     private var uri: String? = null
 
     private val pickVisualMediaLauncher = registerForActivityResult(
-    ActivityResultContracts.PickVisualMedia()
+        ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         if (uri != null) {
             Log.d("PhotoPicker", "Selected URI: $uri")
@@ -37,6 +40,7 @@ class ImportPicture : ComponentActivity() {
                     Log.d("UploadFlow", "Received response: $response")
 
                     withContext(Dispatchers.Main) {
+
                         Toast.makeText(this@ImportPicture, response ?: "Error", Toast.LENGTH_LONG).show()
 
                         val intent = Intent(this@ImportPicture, dimensions::class.java)
@@ -56,21 +60,29 @@ class ImportPicture : ComponentActivity() {
         }
     }
 
-
+    /**
+     *  This function starts the "ImportPicture" activity,
+     *  and starts the camera on the device, if permissions are given.
+     *  If no permissions are given, it prompts the user to allow camera access.
+     *  @param savedInstanceState
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.importpicturepage)
 
+        /* Assign Buttons values */
         val toHome: Button = findViewById(R.id.index)
         val uploadPicture: Button = findViewById(R.id.uploadPicture)
 
+        /* On the button press, jump to MainActivity.kt */
         toHome.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
 
+        /* On the button press, open media selector  */
         uploadPicture.setOnClickListener {
-            Toast.makeText(this, "Upload Picture Clicked", Toast.LENGTH_LONG).show()
+            //Toast.makeText(this, "Upload Picture Clicked", Toast.LENGTH_LONG).show()
             val selectImage = PickVisualMediaRequest.Builder()
                 .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly)
                 .build()
@@ -78,11 +90,16 @@ class ImportPicture : ComponentActivity() {
         }
     }
 
+    /**
+     *
+     */
     private suspend fun uploadToFlask(uri: Uri): String? {
         Log.d("UploadToFlask", "Preparing file from URI: $uri")
 
         val stream = contentResolver.openInputStream(uri)
         val fileBytes = stream?.use { it.readBytes() } ?: return null
+
+        val ip = intent.extras?.getString("Server").toString()
 
         Log.d("UploadToFlask", "Read ${fileBytes.size} bytes from file")
 
@@ -98,10 +115,11 @@ class ImportPicture : ComponentActivity() {
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
+            .hostnameVerifier{_, _ -> true }
             .build()
 
         val request = Request.Builder()
-            .url("http://10.0.2.2:5000/detect") //Change this if using an Andorid device
+            .url("http://${ip}:5000/detect") //Change this if using an Andorid device
             .post(requestBody)
             .build()
 
@@ -115,5 +133,4 @@ class ImportPicture : ComponentActivity() {
             Log.d("UploadToFlask", "Response body: $it")
         }
     }
-
 }

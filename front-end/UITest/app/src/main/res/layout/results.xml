@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".dimensions">
+    tools:context=".Dimensions">
 
     <Button
         android:id="@+id/index"
         android:layout_width="419dp"
         android:layout_height="0dp"
         android:layout_marginBottom="72dp"
-
         android:text="@string/to_index"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

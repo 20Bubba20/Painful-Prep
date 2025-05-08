@@ -2,3 +2,9 @@
 
 .venv/
 __pycache__/
+.idea
+local.properties
+.gradle/
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/deploymentTargetSelector.xml

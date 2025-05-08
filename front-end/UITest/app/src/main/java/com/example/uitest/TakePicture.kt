@@ -22,13 +22,14 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import android.widget.Button
 import android.content.Intent
+
+import android.net.Uri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import android.net.Uri
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -36,25 +37,28 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import java.util.concurrent.TimeUnit
 
-
-
+/**
+ *  This program class allows for a picture to be taken
+ *  and sends the result to a server to run calculations.
+ *  @author Jerron Pierro and Logan Johnson
+ */
 class TakePicture : AppCompatActivity() {
     private lateinit var viewBinding: TakepicturepageBinding
-
+    private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture? = null
 
-
-    private lateinit var cameraExecutor: ExecutorService
-
+    /**
+     *  This function starts the "TakePicture" activity,
+     *  and starts the camera on the device, if permissions are given.
+     *  If no permissions are given, it prompts the user to allow camera access.
+     *  @param savedInstanceState
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewBinding = TakepicturepageBinding.inflate(layoutInflater)
-
         setContentView(viewBinding.root)
 
         /* Start Camera or ask for camera permission */
-
         if (MainActivity.Shared.allPermissionsGranted(this)) {
             startCamera()
         }
@@ -69,6 +73,7 @@ class TakePicture : AppCompatActivity() {
             startCamera()
         }
 
+        /* On the button press run takepicture() */
         viewBinding.imageCaptureButton.setOnClickListener{ takePicture() }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -76,20 +81,27 @@ class TakePicture : AppCompatActivity() {
         /* Assign Buttons values */
         val toHome: Button = findViewById(R.id.index)
 
+        /* On the button press, jump to MainActivity.kt */
         toHome.setOnClickListener {
-            val intent: Intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
     }
 
-    /* */
+
+    /**
+     * This function is responsible for saving a photo taken within the app.
+     * The photo will be saved in InternalStorage\Pictures\PainlessPrep\{date-time}.jpg.
+     */
     private fun takePicture() {
-        // Get a stable reference of the modifiable image capture use case
+        /* Get a stable reference of the modifiable image capture use case */
         val imageCapture = imageCapture ?: return
 
-        // Create time stamped name and MediaStore entry.
+        /* Create time stamped name and MediaStore entry. */
         val name = SimpleDateFormat(MainActivity.FILENAME_FORMAT, Locale.US)
             .format(System.currentTimeMillis())
+
+        /* Set value types to be used when saving a photo */
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
@@ -98,15 +110,14 @@ class TakePicture : AppCompatActivity() {
             }
         }
 
-        // Create output options object which contains file + metadata
+        /* Create output options object which contains file + metadata */
         val outputOptions = ImageCapture.OutputFileOptions
             .Builder(contentResolver,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 contentValues)
             .build()
 
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
+        /* Set up image capture listener, which is triggered after photo has been taken */
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(this),
@@ -115,19 +126,20 @@ class TakePicture : AppCompatActivity() {
                     Log.e(MainActivity.TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
-                override fun onImageSaved(output: ImageCapture.OutputFileResults){
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = output.savedUri
                     val msg = "Photo capture succeeded: $savedUri"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(MainActivity.TAG, msg)
 
+                    /* If the photoURI returns something jump to Dimensions.kt */
                     if (savedUri != null) {
                         CoroutineScope(Dispatchers.IO).launch {
                             try {
                                 val response = uploadToFlask(savedUri)
                                 withContext(Dispatchers.Main) {
                                     Toast.makeText(this@TakePicture, response ?: "Error", Toast.LENGTH_LONG).show()
-                                    val intent = Intent(this@TakePicture, dimensions::class.java)
+                                    val intent = Intent(this@TakePicture, Dimensions::class.java)
                                     intent.putExtra("photo", savedUri)
                                     intent.putExtra("response", response)
                                     startActivity(intent)
@@ -144,6 +156,10 @@ class TakePicture : AppCompatActivity() {
             }
         )
     }
+    
+    /**
+     * This function starts the camera.
+     */
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
@@ -167,14 +183,23 @@ class TakePicture : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
+    /**
+     * This function destroys the current camera object.
+     */
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
     }
 
-    private suspend fun uploadToFlask(uri: Uri): String? {
+    /**
+     * This function connects to a server and uploads a selected file based on
+     * its URI.
+     * @return String or NULL
+     */
+    private fun uploadToFlask(uri: Uri): String? {
         Log.d("UploadToFlask", "Preparing file from URI: $uri")
 
+        val ip = intent.getStringExtra("Server").toString()
         val stream = contentResolver.openInputStream(uri)
         val fileBytes = stream?.use { it.readBytes() } ?: return null
 
@@ -192,10 +217,11 @@ class TakePicture : AppCompatActivity() {
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
+            .hostnameVerifier{_, _ -> true }
             .build()
 
         val request = Request.Builder()
-            .url("http://10.0.2.2:5000/detect") //Change this if using an Andorid device
+            .url("http://${ip}:5000/detect")
             .post(requestBody)
             .build()
 
@@ -209,5 +235,4 @@ class TakePicture : AppCompatActivity() {
             Log.d("UploadToFlask", "Response body: $it")
         }
     }
-
 }
