@@ -72,15 +72,6 @@ def calculate_two_markers(
 
     # Exit if there are too few or too many markers.
     if ids is None or len(ids) != 2:
-        debug_image = cv.aruco.drawDetectedMarkers(
-            image       =image,
-            corners     =corners,
-            ids         =ids,
-            borderColor =(0, 255, 0)
-            )
-        debug_name = os.path.basename(path)
-        cv.imwrite(f"{debug_name[0:7]}_detectedMarkers.jpg", debug_image)
-        print(ids)
         raise ValueError("Unable to detect two markers, please take or upload another image.")
 
     # Get the average scale.
@@ -101,9 +92,6 @@ def calculate_two_markers(
         bottom_marker_coords = corners[0]
     
     is_top_marker_left = top_marker_coords[0][1] < bottom_marker_coords[0][1]
-
-    print(corner_coords)
-    print(type(corner_coords))
 
     # Top left, bottom right diagonal case.
     if is_top_marker_left:
