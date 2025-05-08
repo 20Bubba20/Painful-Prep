@@ -80,7 +80,7 @@ class TakePicture : AppCompatActivity() {
 
         /* On the button press, jump to MainActivity.kt */
         toHome.setOnClickListener {
-            val intent: Intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
     }
@@ -192,7 +192,7 @@ class TakePicture : AppCompatActivity() {
      * its URI.
      * @return String or NULL
      */
-    private suspend fun uploadToFlask(uri: Uri): String? {
+    private fun uploadToFlask(uri: Uri): String? {
         Log.d("UploadToFlask", "Preparing file from URI: $uri")
 
         val ip = intent.getStringExtra("Server").toString()
@@ -217,7 +217,7 @@ class TakePicture : AppCompatActivity() {
             .build()
 
         val request = Request.Builder()
-            .url("http://${ip}:5000/detect") //Change this if using an Android device
+            .url("http://${ip}:5000/detect")
             .post(requestBody)
             .build()
 
