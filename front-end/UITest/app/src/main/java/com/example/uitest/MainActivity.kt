@@ -3,6 +3,7 @@ package com.example.uitest
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
 import android.Manifest
 import android.app.Activity
 import android.content.Context
@@ -38,13 +39,27 @@ class MainActivity : AppCompatActivity() {
 
         /* When the takePicture button is clicked, move to the take picture screen */
         takePicture.setOnClickListener {
-            val intent: Intent = Intent(this, TakePicture::class.java)
+            /* assign textBox value, if none, set to 1.1.1.1 */
+            val textBox: EditText = findViewById(R.id.ip)
+            if (textBox.text.isNullOrEmpty()) {
+                textBox.setText("1.1.1.1")
+            }
+
+            val intent = Intent(this, TakePicture::class.java)
+            intent.putExtra("Server", textBox.text.toString())
             startActivity(intent)
         }
 
         /* When the uploadPicture button is clicked, move to the take picture screen */
         uploadPicture.setOnClickListener {
-            val intent: Intent = Intent(this, ImportPicture::class.java)
+            /* assign textBox value, if none, set to 1.1.1.1 */
+            val textBox: EditText = findViewById(R.id.ip)
+            if (textBox.text.isNullOrEmpty()) {
+                textBox.setText("1.1.1.1")
+            }
+
+            val intent = Intent(this, ImportPicture::class.java)
+            intent.putExtra("Server", (textBox.text).toString())
             startActivity(intent)
         }
 

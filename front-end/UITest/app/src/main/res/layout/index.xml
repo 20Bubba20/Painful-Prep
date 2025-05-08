@@ -23,7 +23,7 @@
         android:id="@+id/TakePicture"
         android:layout_width="140dp"
         android:layout_height="55dp"
-        android:layout_marginBottom="244dp"
+        android:layout_marginBottom="304dp"
         android:text="@string/take_photo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,12 +34,26 @@
         android:id="@+id/uploadPicture"
         android:layout_width="132dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="136dp"
+        android:layout_marginBottom="200dp"
         android:elevation="200dp"
         android:text="@string/import_photo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="50" />
+
+    <EditText
+        android:id="@+id/ip"
+        android:autofillHints="ipAddress,website,server"
+        android:inputType="text"
+        android:layout_width="132dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="92dp"
+        android:hint="XXX.XXX.XXX.XXX"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintWidth_percent="50" />
 </androidx.constraintlayout.widget.ConstraintLayout>
