@@ -72,15 +72,6 @@ def calculate_two_markers(
 
     # Exit if there are too few or too many markers.
     if ids is None or len(ids) != 2:
-        debug_image = cv.aruco.drawDetectedMarkers(
-            image       =image,
-            corners     =corners,
-            ids         =ids,
-            borderColor =(0, 255, 0)
-            )
-        debug_name = os.path.basename(path)
-        cv.imwrite(f"{debug_name[0:7]}_detectedMarkers.jpg", debug_image)
-        print(ids)
         raise ValueError("Unable to detect two markers, please take or upload another image.")
 
     # Get the average scale.
@@ -102,13 +93,6 @@ def calculate_two_markers(
     
     is_top_marker_left = top_marker_coords[0][1] < bottom_marker_coords[0][1]
 
-    # Use this for verbose debugging:
-    # if __debug__:
-    #     print(f"coords: {corners}\n")
-    #     print(f"top marker: {top_marker_coords}\n")
-    #     print(f"Is top marker left? {is_top_marker_left} because:")
-    #     print(f"{top_marker_coords[0][1]} < {bottom_marker_coords[0][1]}")
-
     # Top left, bottom right diagonal case.
     if is_top_marker_left:
         t_coord_x, t_coord_y, b_coord_x, b_coord_y = get_diff_two_markers_px(corner_coords, "TLBR")
@@ -119,11 +103,6 @@ def calculate_two_markers(
     # Get width and height in pixels.
     h_px = abs(t_coord_x - b_coord_x)
     w_px = abs(t_coord_y - b_coord_y)
-
-    if __debug__:
-        corner_img = cv.circle(image, (t_coord_x, t_coord_y), 5, (0, 255, 0), 5)
-        corner_img = cv.circle(image, (b_coord_x, b_coord_y), 5, (0, 255, 0), 5)
-        cv.imwrite("corners.jpg", corner_img)
 
     # Convert width and height to inches.
     scale_mm = marker_size_mm / scale_px
@@ -151,7 +130,7 @@ def get_scale(corners: np.ndarray) -> float:
     displ_0 = corners[0] - corners[1]
     displ_1 = corners[1] - corners[2]
     displ_2 = corners[2] - corners[3]
-    displ_3 = corners[3] - corners[1]
+    displ_3 = corners[3] - corners[0]
 
     norms = []
 
@@ -203,6 +182,8 @@ def get_diff_two_markers_px(
     y_4 = max(y_coords_tmp)
     y_4_idx = y_coords.index(y_4)
 
+    tr_coord_x = tr_coord_y = bl_coord_x = bl_coord_y = 0
+    tl_coord_x = tl_coord_y = br_coord_x = br_coord_y = 0
     if diagonal == "TLBR":
         # Find the top left most vector.
         if coords[y_1_idx][0] < coords[y_2_idx][0]:
@@ -215,9 +196,6 @@ def get_diff_two_markers_px(
             br_coord_x, br_coord_y = coords[y_3_idx]
         else:
             br_coord_x, br_coord_y = coords[y_4_idx]
-
-        return tl_coord_x, tl_coord_y, br_coord_x, br_coord_y
-    
     elif diagonal == "TRBL":
         # Find the top right most vector.
         if coords[y_1_idx][0] > coords[y_2_idx][0]:
@@ -230,10 +208,21 @@ def get_diff_two_markers_px(
             bl_coord_x, bl_coord_y = coords[y_3_idx]
         else:
             bl_coord_x, bl_coord_y = coords[y_4_idx]
-
-        return tr_coord_x, tr_coord_y, bl_coord_x, bl_coord_y
     else:
         raise ValueError("Unable to find diagonal for calculation, please take or upload another image.")
+
+    if diagonal == "TLBR":
+        tl_coord_x = int(tl_coord_x)
+        tl_coord_y = int(tl_coord_y)
+        br_coord_x = int(br_coord_x)
+        br_coord_y = int(br_coord_y)
+        return tl_coord_x, tl_coord_y, br_coord_x, br_coord_y
+    elif diagonal == "TRBL":
+        tr_coord_x = int(tr_coord_x)
+        tr_coord_y = int(tr_coord_y)
+        bl_coord_x = int(bl_coord_x)
+        bl_coord_y = int(bl_coord_y)
+        return tr_coord_x, tr_coord_y, bl_coord_x, bl_coord_y
 
 if __name__ == "__main__":
     """
