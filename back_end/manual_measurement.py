@@ -13,7 +13,7 @@ import cv2 as cv
 import numpy as np
 import sys
 import two_marker_detect
-from back_end.one_marker_detect import MM_IN_RATIO
+from one_marker_detect import MM_IN_RATIO
 from pathlib import Path
 
 def main():
