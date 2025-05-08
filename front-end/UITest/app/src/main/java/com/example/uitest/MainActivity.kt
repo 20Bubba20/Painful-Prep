@@ -15,11 +15,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
+
 /**
  * This program is the base page for the Painless Prep application.
  * This allows the user to jump to either TakePicture.kt or ImportPicture.kt.
  * This page is where permissions are originally prompted, and saved.
- * @author Jerron Pierro
+ * @author Jerron Pierro and Logan Johnson
  */
 class MainActivity : AppCompatActivity() {
     /**
@@ -102,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(context, "Permission request denied", Toast.LENGTH_SHORT).show()
             }
 
-            permissionReqInProgress = false
+          permissionReqInProgress = false
         }
     }
 
@@ -130,8 +131,6 @@ class MainActivity : AppCompatActivity() {
         val REQUIRED_PERMISSIONS =
             mutableListOf(
                 Manifest.permission.CAMERA
-                //Manifest.permission.INTERNET
-                //Manifest.permission.READ_EXTERNAL_STORAGE
             ).apply {
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)

@@ -40,10 +40,10 @@ class ImportPicture : ComponentActivity() {
                     Log.d("UploadFlow", "Received response: $response")
 
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@ImportPicture, response ?: "Error", Toast.LENGTH_LONG)
-                            .show()
 
-                        val intent = Intent(this@ImportPicture, Dimensions::class.java)
+                        Toast.makeText(this@ImportPicture, response ?: "Error", Toast.LENGTH_LONG).show()
+
+                        val intent = Intent(this@ImportPicture, dimensions::class.java)
                         intent.putExtra("photo", uri)
                         intent.putExtra("response", response)
                         startActivity(intent)
@@ -51,11 +51,7 @@ class ImportPicture : ComponentActivity() {
                 } catch (e: Exception) {
                     Log.e("UploadError", "Exception during upload", e)
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(
-                            this@ImportPicture,
-                            "Upload failed: ${e.message}",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(this@ImportPicture, "Upload failed: ${e.message}", Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -102,7 +98,9 @@ class ImportPicture : ComponentActivity() {
 
         val stream = contentResolver.openInputStream(uri)
         val fileBytes = stream?.use { it.readBytes() } ?: return null
+
         val ip = intent.extras?.getString("Server").toString()
+
         Log.d("UploadToFlask", "Read ${fileBytes.size} bytes from file")
 
         val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)

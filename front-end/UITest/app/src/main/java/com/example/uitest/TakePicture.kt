@@ -22,18 +22,20 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import android.widget.Button
 import android.content.Intent
+
 import android.net.Uri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import java.util.concurrent.TimeUnit
-
 
 /**
  *  This program class allows for a picture to be taken
@@ -62,7 +64,7 @@ class TakePicture : AppCompatActivity() {
         }
         else {
             val ActivityResultLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-                    permissions -> MainActivity.Shared.handlePermissionsResults(this, permissions)
+                permissions -> MainActivity.Shared.handlePermissionsResults(this, permissions)
             }
 
             while (!MainActivity.Shared.allPermissionsGranted(this)) {
@@ -70,6 +72,7 @@ class TakePicture : AppCompatActivity() {
             }
             startCamera()
         }
+
         /* On the button press run takepicture() */
         viewBinding.imageCaptureButton.setOnClickListener{ takePicture() }
 
@@ -84,6 +87,7 @@ class TakePicture : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
 
     /**
      * This function is responsible for saving a photo taken within the app.
@@ -152,7 +156,7 @@ class TakePicture : AppCompatActivity() {
             }
         )
     }
-
+    
     /**
      * This function starts the camera.
      */
