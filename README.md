@@ -9,7 +9,7 @@ The `two_marker_detect` tool also provides dimensions of windows in pictures, bu
 
 ## Usage
 
-To use the `demo_tool`, follow the below steps if taking a new picture. If using an existing image in the project repository, skip to step 6:
+To use the `one_marker_detect` or `one_marker_detect_v2`, follow the below steps if taking a new picture. If using an existing image in the project repository, skip to step 6:
 
 1. Go to [this website](https://chev.me/arucogen/) to generate an ArUco marker, size 100mm, marker ID 0, and in the 4x4 dictionary.
 2. Save the marker and print to scale.
@@ -19,15 +19,11 @@ To use the `demo_tool`, follow the below steps if taking a new picture. If using
 6. Make sure Python and pip are installed.
 7. Navigate to the root of the project directory.
 8. Run the following command to install dependencies: `pip install -r requirements.txt`
-9. To run the prototype, run: `python ./back-end/demo_tool.py <path/to/image>`
+9. To run the prototype, run: `python ./one_marker_detect.py <path/to/image>` or `python ./one_marker_detect_v2.py <path/to/image>`
 
 Adjust the run command as necessary based on current working directory and python version. Replace `<path/to/image>` with a relative path to the desired image.
 
-Once complete, the console should print a height and width in inches. Three images should also be made in the current working directory, named:
-
-- canny.jpg
-- contours.jpg
-- lines_image.jpg
+Once complete, the console should print a height and width in inches.
 
 To use the `two_marker_detect` tool, follow the below steps:
 
@@ -46,6 +42,7 @@ To use the `test_demo_tool_all_images` tool, follow the below steps:
 2. Run: `python test_demo_tool_all_images.py`.
 
 To use the `mobile app`, follow the below steps.
+
 1. Go to [this website](https://chev.me/arucogen/) to generate an ArUco marker, size 100mm, marker ID 0, and in the 4x4 dictionary.
 2. Save the marker and print to scale.
 3. Place marker somewhere near the window to be tested.
@@ -66,9 +63,10 @@ Code Milestone 3: `two_marker_detect` now supports more diverse marker placement
 
 Code Milestone 4: The front-end is now usable, but has not been linked up to the back-end yet. On `Logan_Branch`, a version of the front-end that connects to the back-end is in development. 
 
+Code Milestone 5: Added unit tests both on the front and backend. Renamed `demo_tool.py` to `one_marker_detect.py` and made two versions, one using Guassians and one without Gaussians. Fixed bugs in dimension calculation.
+
 ## Contributing
 
-As of 2/9 - Very Rough Project Structure is outlined.
-For Local Development Tools -
-Angular: cd front-end, then run npm install angular
-OpenCv: cd back-end, then run pip install opencv-python
+As of 5/8 - For installing python dependencies, run in root directory:
+`pip install -r requirements.txt` for OpenCV, Numpy
+`pip install -r dev-requirements.txt` for PyTest
