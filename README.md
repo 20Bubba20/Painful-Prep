@@ -36,10 +36,10 @@ To use the `two_marker_detect` tool, follow the below steps:
 7. Navigate to the `back-end` folder of the project directory.
 8. To run: `python two_marker_detect.py <path/to/image> <marker size in mm>`
 
-To use the `test_demo_tool_all_images` tool, follow the below steps:
+To use the `test_marker_detectors` tool, follow the below steps:
 
-1. Navigate to the directory where `test_demo_tool_all_images.py` is located.
-2. Run: `python test_demo_tool_all_images.py`.
+1. Navigate to the directory where `test_marker_detectors.py` is located.
+2. Run: `python test_marker_detectors.py`.
 
 To use the `mobile app`, follow the below steps.
 
