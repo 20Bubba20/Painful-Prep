@@ -19,7 +19,7 @@ import os
 from pathlib import Path
 from typing import Literal
 
-from demo_tool import MM_IN_RATIO
+from one_marker_detect import MM_IN_RATIO
 
 def calculate_two_markers(
         path: Path, 
