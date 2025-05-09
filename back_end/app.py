@@ -25,7 +25,7 @@ def detect_window_dimensions():
         image_path = Path(tmp_file.name)
 
     try:
-        width, height = calculate_two_markers(image_path, marker_size)
+        width, height = calculate_two_markers(image_path, marker_size, "AprilTag")
         return jsonify({
             "width_in": round(width, 2),
             "height_in": round(height, 2)
