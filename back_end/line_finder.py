@@ -1,3 +1,9 @@
+"""
+@file line_finder.py
+@brief Takes provides the function process_lines for finding a quadrilateral from a processed image.
+"""
+
+
 import cv2 as cv
 import numpy as np
 import math
@@ -22,8 +28,12 @@ def line_angle(line):
 
 def filter_lines_by_angle(lines, angle_ref, tolerance=5):
     """
-    Keep lines that are within tolerance degrees of angle_ref or angle_ref+90.
-    angle_ref and all angles are in degrees.
+    @brief Keep lines that are within tolerance
+
+    @param lines lines to iterate over
+    @param angle_ref reference angle
+    @param tolerance tolerance in degrees
+    @return filtered lines
     """
     filtered = []
     for line in lines:
@@ -49,7 +59,13 @@ def point_line_distance(point, line_pt1, line_pt2):
 
 
 def line_intersection(line1, line2):
-    """Returns the intersection point of two lines defined by [x1,y1,x2,y2] or [[x1,y1,x2,y2]]."""
+    """
+    @brief Returns the intersection point of two lines
+
+     @param line1 First line defined as [x1,y1,x2,y2] or [[x1,y1,x2,y2]]
+     @param line2 Second line defined as [x1,y1,x2,y2] or [[x1,y1,x2,y2]]
+     @return intersection point
+     """
     x1, y1, x2, y2 = map(float, line1[0])
     x3, y3, x4, y4 = map(float, line2[0])
 
@@ -80,6 +96,13 @@ def line_intersection(line1, line2):
 
 
 def get_four_intersections(intersections, image_shape):
+    """
+    @brief Selects four intersection points from a list of intersections, one for each corner.
+
+    @param intersections list of potential intersection points
+    @param image_shape dimensions of the image
+    @return list of four intersection points
+    """
     if len(intersections) < 4:
         return None
 
@@ -146,8 +169,10 @@ def get_intersections(lines):
 
 def fit_quadrilateral(intersections):
     """
-    Attempts to fit a 4-point quadrilateral from the given intersection points.
-    Handles both 4 points (normal case) and 3 points (triangle case by mirroring).
+    @brief Attempts to fit a 4-point quadrilateral from the given intersection points.
+
+    @param intersections list of four intersection points
+    @return quadrilateral
     """
     if intersections is None or len(intersections) < 4:
         print("Not enough points to form a quadrilateral.")
@@ -191,9 +216,14 @@ def average_line_midpoint(lines, length_thresh=100):
 
 def select_window_edges(lines, image, length_thresh=100, angle_tolerance=45):
     """
-    From a set of Hough lines [[x1,y1,x2,y2],...], pick exactly four:
-     - One in each region (top, right, bottom, left) relative to the window center.
-     - Only consider lines within `angle_tolerance` degrees of the expected orientation.
+    @brief Selects window edges around the given image.
+
+    @param lines list of potential edges as lines
+    @param image image
+    @param length_thresh threshold length for finding midpoint
+    @param angle_tolerance angle tolerance for selecting window edges
+
+    @return list of 4 lines
     """
     h, w = image.shape
 
@@ -283,6 +313,14 @@ def select_window_edges(lines, image, length_thresh=100, angle_tolerance=45):
 # Main processing pipeline:
 # Assume combined_image is your binary edge image from DoG/Canny combination.
 def process_lines(combined_image, show_output=False):
+    """
+    @brief Takes a processed image of a window and returns lines of its edges
+
+    @param combined_image processed image of window
+    @param show_output show output of each pass in a seperate window
+    @return list of 4 lines
+    """
+
     # Detect lines using HoughLinesP
     lines = cv.HoughLinesP(
         image=combined_image,
