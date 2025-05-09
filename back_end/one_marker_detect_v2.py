@@ -1,7 +1,8 @@
 """
-Gets dimensions for window in picture file.
+@file one_marker_detect_v2.py
+@brief Uses an updated pipeline to get dimensions for window in picture file.
 
-Usage: python demo_tool.py <file_path>
+Usage: python one_marker_detect_v2.py <file_path>
 """
 
 import cv2 as cv
@@ -17,6 +18,14 @@ OUTPUT_PASSES = False
 
 
 def apply_dog(image: np.ndarray, sigma1=1.0, sigma2=2.0) -> np.ndarray:
+    """
+    @brief Applies Difference of Gaussians edge detection.
+
+    @param image The image to process.
+    @param sigma1 The value of the first Gaussian blur.
+    @param sigma2 The value of the second Gaussian blur.
+    @return The processed image.
+    """
     blur1 = cv.GaussianBlur(image, (0, 0), sigma1)
     blur2 = cv.GaussianBlur(image, (0, 0), sigma2)
     dog = cv.subtract(blur1, blur2)
@@ -28,6 +37,12 @@ def apply_dog(image: np.ndarray, sigma1=1.0, sigma2=2.0) -> np.ndarray:
 
 
 def apply_canny(image: np.ndarray):
+    """
+    @brief Applies Canny edge detection.
+
+    @param image The image to process.
+    @return The processed image.
+    """
 
     # Use Otsu's method to find threshold for canny detection
     thresh, otsu_thresh = cv.threshold(image, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
@@ -53,13 +68,11 @@ def apply_canny(image: np.ndarray):
     return canny_image
 
 def find_windowpane(path: Path) -> np.ndarray:
-    """Finds window.
+    """
+    @brief Finds the window in an image.
 
-    Args:
-        path (pathlib.Path): File path to picture containing window.
-
-    Returns:
-        numpy.ndarray: Coordinates of corners of window.
+    @param path File path to picture containing the window.
+    @return Coordinates of corners of the detected window as a numpy.ndarray.
     """
     image = cv.imread(path, cv.IMREAD_COLOR_RGB)
     grayscale_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
@@ -132,14 +145,12 @@ def find_windowpane(path: Path) -> np.ndarray:
     return quad
 
 def get_window_dimensions(path: str, quadrilateral: np.ndarray) -> tuple:
-    """Finds window dimensions.
+    """
+    @brief Computes the width and height of a detected window.
 
-    Args:
-        path (pathlib.Path): File path to picture containing window.
-        quadrilateral (numpy.ndarray): Array object containing corner coordinates of window.
-
-    Returns:
-        tuple: Width and height of window in inches in that order.
+    @param path File path to the image containing the window.
+    @param quadrilateral Coordinates of the detected window corners.
+    @return Tuple containing the width and height of the window in inches.
     """
     image = cv.imread(path, cv.IMREAD_GRAYSCALE)
 
