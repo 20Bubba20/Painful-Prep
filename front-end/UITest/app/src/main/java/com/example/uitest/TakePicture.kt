@@ -23,6 +23,19 @@ import java.util.Locale
 import android.widget.Button
 import android.content.Intent
 
+import android.net.Uri
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import java.util.concurrent.TimeUnit
 
 /**
  *  This program class allows for a picture to be taken
@@ -51,7 +64,7 @@ class TakePicture : AppCompatActivity() {
         }
         else {
             val ActivityResultLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-                    permissions -> MainActivity.Shared.handlePermissionsResults(this, permissions)
+                permissions -> MainActivity.Shared.handlePermissionsResults(this, permissions)
             }
 
             while (!MainActivity.Shared.allPermissionsGranted(this)) {
@@ -59,6 +72,7 @@ class TakePicture : AppCompatActivity() {
             }
             startCamera()
         }
+
         /* On the button press run takepicture() */
         viewBinding.imageCaptureButton.setOnClickListener{ takePicture() }
 
@@ -69,10 +83,11 @@ class TakePicture : AppCompatActivity() {
 
         /* On the button press, jump to MainActivity.kt */
         toHome.setOnClickListener {
-            val intent: Intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
     }
+
 
     /**
      * This function is responsible for saving a photo taken within the app.
@@ -118,14 +133,30 @@ class TakePicture : AppCompatActivity() {
                     Log.d(MainActivity.TAG, msg)
 
                     /* If the photoURI returns something jump to Dimensions.kt */
-                    val intent: Intent = Intent(applicationContext, Dimensions::class.java)
-                    intent.putExtra("photo", output.savedUri)
-                    startActivity(intent)
+                    if (savedUri != null) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            try {
+                                val response = uploadToFlask(savedUri)
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(this@TakePicture, response ?: "Error", Toast.LENGTH_LONG).show()
+                                    val intent = Intent(this@TakePicture, Dimensions::class.java)
+                                    intent.putExtra("photo", savedUri)
+                                    intent.putExtra("response", response)
+                                    startActivity(intent)
+                                }
+                            } catch (e: Exception) {
+                                Log.e("UploadError", "Camera upload failed", e)
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(this@TakePicture, "Upload failed: ${e.message}", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
+                    }
                 }
             }
         )
     }
-
+    
     /**
      * This function starts the camera.
      */
@@ -158,5 +189,59 @@ class TakePicture : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
+    }
+
+    /**
+     * This function connects to a server and uploads a selected file based on
+     * its URI.
+     * @return String or NULL
+     */
+    private suspend fun uploadToFlask(uri: Uri): String? {
+        /* Log the URI being used */
+        Log.d("UploadToFlask", "Preparing file from URI: $uri")
+
+        /* Open the image as a byte stream and read all bytes; return null if failed */
+        val stream = contentResolver.openInputStream(uri)
+        val fileBytes = stream?.use { it.readBytes() } ?: return null
+
+        /* Get the server IP address from the intent extras */
+        val ip = intent.extras?.getString("Server").toString()
+
+        Log.d("UploadToFlask", "Read ${fileBytes.size} bytes from file")
+
+        /* Build a multipart/form-data request with the image and a marker size parameter */
+        val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
+            .addFormDataPart(
+                "image", "upload.jpg",
+                RequestBody.create("image/jpeg".toMediaTypeOrNull(), fileBytes)
+            )
+            .addFormDataPart("marker_size", "50")
+            .build()
+
+        /* Build an HTTP client with timeout settings and permissive hostname verification */
+        val client = OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .hostnameVerifier { _, _ -> true } /* Bypasses hostname verification (insecure for production) */
+            .build()
+
+        /* Create a POST request targeting the Flask server's /detect endpoint */
+        val request = Request.Builder()
+            .url("http://${ip}:5000/detect") /* Update this URL if testing on a real Android device */
+            .post(requestBody)
+            .build()
+
+        Log.d("UploadToFlask", "Sending request to Flask server")
+
+        /* Execute the request and get the response */
+        val response = client.newCall(request).execute()
+
+        Log.d("UploadToFlask", "Received HTTP ${response.code}")
+
+        /* Return the response body as a string and log it */
+        return response.body?.string().also {
+            Log.d("UploadToFlask", "Response body: $it")
+        }
     }
 }
