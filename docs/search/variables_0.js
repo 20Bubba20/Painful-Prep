@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['height_0',['height',['../namespacedemo__tool.html#a7c57ec04b551644124e25a13c36c2268',1,'demo_tool.height'],['../namespacetwo__marker__detect.html#acabcc1370146d5a00237569de674033c',1,'two_marker_detect.height']]]
+  ['_5fborder_5fsize_5fin_0',['_border_size_in',['../classtwo__marker__classes_1_1_two_marker_detector.html#afb4577157f1ad0ea00eba6d13332a74f',1,'two_marker_classes::TwoMarkerDetector']]],
+  ['_5fcorners_1',['_corners',['../classtwo__marker__classes_1_1_two_marker_detector.html#ab6365fd5e33602dd57a61eaf7a88c48d',1,'two_marker_classes::TwoMarkerDetector']]]
 ];

@@ -1,0 +1,10 @@
+<map id="manual_measurement.main" name="manual_measurement.main">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,113,187,140"/>
+<area shape="rect" id="Node000002" href="$namespacetwo__marker__detect.html#adfdc5b0703a5587ad0829f4961e5298c" title=" " alt="" coords="252,5,406,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="123,110,234,58,248,52,250,56,236,62,125,115"/>
+<area shape="rect" id="Node000003" href="$namespacetwo__marker__detect.html#a1ddb745fe8864a32941ac58f217572fd" title=" " alt="" coords="252,72,406,115"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="187,111,236,104,237,109,187,116"/>
+<area shape="rect" id="Node000004" href="$namespacemanual__measurement.html#aaef56c14e48f33889008170048683de3" title=" " alt="" coords="235,139,423,181"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="143,138,220,151,219,156,142,143"/>
+<area shape="poly" id="edge4_Node000004_Node000001" title=" " alt="" coords="236,141,202,135,202,130,237,135"/>
+</map>

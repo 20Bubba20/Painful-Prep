@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.13.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>painless_prep_inital_doxygen: two_marker_detect Namespace Reference</title>
+<title>PainfulPrep: two_marker_detect Namespace Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,9 +31,11 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="logoonly.png"/></td>
   <td id="projectalign">
-   <div id="projectname">painless_prep_inital_doxygen
+   <div id="projectname">PainfulPrep<span id="projectnumber">&#160;2</span>
    </div>
+   <div id="projectbrief">Painless Prep Window Measurement</div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -111,10 +113,12 @@ $(function(){initNavTree('namespacetwo__marker__detect.html',''); initResizable(
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad5bc60490060612f9ce03354f20c425b" id="r_ad5bc60490060612f9ce03354f20c425b"><td class="memItemLeft" align="right" valign="top">tuple[int, int]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad5bc60490060612f9ce03354f20c425b">calculate_two_markers</a> (Path path, int marker_size_mm)</td></tr>
-<tr class="separator:ad5bc60490060612f9ce03354f20c425b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae762d14c321f6487fe5858b90186b8c0" id="r_ae762d14c321f6487fe5858b90186b8c0"><td class="memItemLeft" align="right" valign="top">tuple[int, int]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae762d14c321f6487fe5858b90186b8c0">calculate_two_markers</a> (Path path, int marker_size_mm, Literal[&quot;ArUco&quot;, &quot;AprilTag&quot;] marker_type=&quot;ArUco&quot;, float border_offset_in=0)</td></tr>
+<tr class="separator:ae762d14c321f6487fe5858b90186b8c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ddb745fe8864a32941ac58f217572fd" id="r_a1ddb745fe8864a32941ac58f217572fd"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1ddb745fe8864a32941ac58f217572fd">get_scale</a> (np.ndarray corners)</td></tr>
 <tr class="separator:a1ddb745fe8864a32941ac58f217572fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfdc5b0703a5587ad0829f4961e5298c" id="r_adfdc5b0703a5587ad0829f4961e5298c"><td class="memItemLeft" align="right" valign="top">tuple[int, int, int, int]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adfdc5b0703a5587ad0829f4961e5298c">get_diff_two_markers_px</a> (list[tuple[int, int]] coords, Literal[&quot;TLBR&quot;, &quot;TRBL&quot;] diagonal=&quot;TLBR&quot;)</td></tr>
+<tr class="separator:adfdc5b0703a5587ad0829f4961e5298c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -135,8 +139,8 @@ Usage:
 
 @note The marker size must be provided in millimeters (mm).
 </pre> </div><h2 class="groupheader">Function Documentation</h2>
-<a id="ad5bc60490060612f9ce03354f20c425b" name="ad5bc60490060612f9ce03354f20c425b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad5bc60490060612f9ce03354f20c425b">&#9670;&#160;</a></span>calculate_two_markers()</h2>
+<a id="ae762d14c321f6487fe5858b90186b8c0" name="ae762d14c321f6487fe5858b90186b8c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae762d14c321f6487fe5858b90186b8c0">&#9670;&#160;</a></span>calculate_two_markers()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -149,7 +153,17 @@ Usage:
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>marker_size_mm</em></span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>marker_size_mm</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Literal[&quot;ArUco&quot;, &quot;AprilTag&quot;]</td>          <td class="paramname"><span class="paramname"><em>marker_type</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;ArUco&quot;</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float </td>          <td class="paramname"><span class="paramname"><em>border_offset_in</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -157,14 +171,112 @@ Usage:
 
 This function detects exactly two ArUco markers in an image, computes the scale 
 based on their known size, and calculates the dimensions of the window in inches.
+Calculation involves find the farthest apart marker corners, and then obtaining
+the x and y pixel offset. A pixel scale of the markers is used to determine the 
+real life size difference in inches. Due to camera distortion and suboptimal 
+camera angles, the final computed dimension is rounded up to the nearest half 
+inch.
 
 @param path Path to the image file.
 @param marker_size_mm Known size of the marker in millimeters.
+@param marker_type Defines the specific markers in the image. Has to be a literal
+       value either "ArUco" or "AprilTag". Defaults to ArUco markers. 
+@param border_offset_in Defines the size of the white border around the marker itself.
+       White borders help in improving detection of markers and the border size is
+       used for calculating the dimensions of the window. Defaults to 0. Border size
+       has to be provided in inches.
 
 @return Tuple (width, height) of the window in inches. Returns None if the number 
         of markers detected is not exactly two.
 </pre> 
-<p class="reference">References <a class="el" href="#a1ddb745fe8864a32941ac58f217572fd">get_scale()</a>.</p>
+<p class="reference">References <a class="el" href="#adfdc5b0703a5587ad0829f4961e5298c">get_diff_two_markers_px()</a>, and <a class="el" href="#a1ddb745fe8864a32941ac58f217572fd">get_scale()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="namespacetest__marker__detectors.html#ab81da238ad4cf72c0ac3a3916202d37f">test_marker_detectors.run_two_marker_detect()</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacetwo__marker__detect_ae762d14c321f6487fe5858b90186b8c0_cgraph.png" border="0" usemap="#anamespacetwo__marker__detect_ae762d14c321f6487fe5858b90186b8c0_cgraph" alt=""/></div>
+<map name="anamespacetwo__marker__detect_ae762d14c321f6487fe5858b90186b8c0_cgraph" id="anamespacetwo__marker__detect_ae762d14c321f6487fe5858b90186b8c0_cgraph">
+<area shape="rect" title=" " alt="" coords="5,39,194,81"/>
+<area shape="rect" href="namespacetwo__marker__detect.html#adfdc5b0703a5587ad0829f4961e5298c" title=" " alt="" coords="242,5,396,48"/>
+<area shape="poly" title=" " alt="" coords="194,43,226,38,227,43,194,48"/>
+<area shape="rect" href="namespacetwo__marker__detect.html#a1ddb745fe8864a32941ac58f217572fd" title=" " alt="" coords="242,72,396,115"/>
+<area shape="poly" title=" " alt="" coords="194,72,227,77,226,82,194,77"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacetwo__marker__detect_ae762d14c321f6487fe5858b90186b8c0_icgraph.png" border="0" usemap="#anamespacetwo__marker__detect_ae762d14c321f6487fe5858b90186b8c0_icgraph" alt=""/></div>
+<map name="anamespacetwo__marker__detect_ae762d14c321f6487fe5858b90186b8c0_icgraph" id="anamespacetwo__marker__detect_ae762d14c321f6487fe5858b90186b8c0_icgraph">
+<area shape="rect" title=" " alt="" coords="458,29,646,72"/>
+<area shape="rect" href="namespacetest__marker__detectors.html#ab81da238ad4cf72c0ac3a3916202d37f" title=" " alt="" coords="237,29,410,72"/>
+<area shape="poly" title=" " alt="" coords="442,53,410,53,410,48,442,48"/>
+<area shape="rect" href="namespacetest__marker__detectors.html#ad6af92cc1f39913107c3ff7980ceb41c" title=" " alt="" coords="5,29,189,72"/>
+<area shape="poly" title=" " alt="" coords="221,53,189,53,189,48,221,48"/>
+<area shape="poly" title=" " alt="" coords="134,16,120,10,97,8,76,10,63,15,57,21,59,28,54,29,52,19,59,10,74,5,97,3,121,5,136,11"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="adfdc5b0703a5587ad0829f4961e5298c" name="adfdc5b0703a5587ad0829f4961e5298c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfdc5b0703a5587ad0829f4961e5298c">&#9670;&#160;</a></span>get_diff_two_markers_px()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"> tuple[int, int, int, int] two_marker_detect.get_diff_two_markers_px </td>
+          <td>(</td>
+          <td class="paramtype">list[tuple[int, int]]</td>          <td class="paramname"><span class="paramname"><em>coords</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Literal[&quot;TLBR&quot;, &quot;TRBL&quot;] </td>          <td class="paramname"><span class="paramname"><em>diagonal</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;TLBR&quot;</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">@brief Finds the coordinates of the diagonal of a window.
+
+This function figures out the x and y coordinates of the two opposing corners of a window
+based on the placement of the two ArUco markers in those corners. 
+
+@param coords List of coordinate pairs in order x, y
+@param diagonal Literal that indicates marker placement. TLBR indicates that one marker was 
+       placed in the top left corner of the window and the other in the bottom right. TRBL
+       indicates that one marker was placed in the top right corner and the other in the
+       bottom left corner. 
+
+@return Returns a four-tuple of integer values. The values are returned in this order: 
+        Top x coordinate, top y coordinate, bottom x coordinate, bottom y coordinate.
+</pre> 
+<p class="reference">Referenced by <a class="el" href="classtwo__marker__classes_1_1_two_marker_detector.html#af837514a32d77c5f5ee630b6ccc00d8d">two_marker_classes.TwoMarkerDetector.calculate()</a>, <a class="el" href="#ae762d14c321f6487fe5858b90186b8c0">calculate_two_markers()</a>, <a class="el" href="namespacemanual__measurement.html#acc4481a9460f4f27e852d2cfa514ee20">manual_measurement.main()</a>, and <a class="el" href="namespacetest__two__marker__detect.html#ab5fda865fad6eaafd6c3be752b6788ef">test_two_marker_detect.test_get_diff_two_markers_px()</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacetwo__marker__detect_adfdc5b0703a5587ad0829f4961e5298c_icgraph.png" border="0" usemap="#anamespacetwo__marker__detect_adfdc5b0703a5587ad0829f4961e5298c_icgraph" alt=""/></div>
+<map name="anamespacetwo__marker__detect_adfdc5b0703a5587ad0829f4961e5298c_icgraph" id="anamespacetwo__marker__detect_adfdc5b0703a5587ad0829f4961e5298c_icgraph">
+<area shape="rect" title=" " alt="" coords="730,101,885,144"/>
+<area shape="rect" href="classtwo__marker__classes_1_1_two_marker_detector.html#af837514a32d77c5f5ee630b6ccc00d8d" title=" " alt="" coords="473,5,682,48"/>
+<area shape="poly" title=" " alt="" coords="753,96,681,62,651,51,653,46,683,58,755,91"/>
+<area shape="rect" href="namespacetwo__marker__detect.html#ae762d14c321f6487fe5858b90186b8c0" title=" " alt="" coords="484,72,672,115"/>
+<area shape="poly" title=" " alt="" coords="715,114,672,108,673,103,715,108"/>
+<area shape="rect" href="namespacemanual__measurement.html#acc4481a9460f4f27e852d2cfa514ee20" title=" " alt="" coords="487,139,668,165"/>
+<area shape="poly" title=" " alt="" coords="715,137,669,143,668,138,715,132"/>
+<area shape="rect" href="namespacetest__two__marker__detect.html#ab5fda865fad6eaafd6c3be752b6788ef" title=" " alt="" coords="484,189,671,232"/>
+<area shape="poly" title=" " alt="" coords="747,153,683,180,651,191,650,186,681,175,745,148"/>
+<area shape="rect" href="namespacetest__marker__detectors.html#ab81da238ad4cf72c0ac3a3916202d37f" title=" " alt="" coords="244,64,418,107"/>
+<area shape="poly" title=" " alt="" coords="468,92,418,91,418,85,468,87"/>
+<area shape="rect" href="namespacetest__marker__detectors.html#ad6af92cc1f39913107c3ff7980ceb41c" title=" " alt="" coords="5,64,189,107"/>
+<area shape="poly" title=" " alt="" coords="229,88,189,88,189,83,229,83"/>
+<area shape="poly" title=" " alt="" coords="135,51,121,45,97,43,75,45,61,49,56,55,58,63,53,64,51,54,58,45,74,39,97,37,122,40,137,46"/>
+<area shape="rect" href="namespacemanual__measurement.html#aaef56c14e48f33889008170048683de3" title=" " alt="" coords="237,131,425,173"/>
+<area shape="poly" title=" " alt="" coords="471,164,426,163,426,158,471,158"/>
+<area shape="poly" title=" " alt="" coords="441,140,486,141,486,146,441,146"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -191,7 +303,33 @@ average length of its sides, which is used to determine the scale.
 
 @return The average pixel length of the marker's sides.
 </pre> 
-<p class="reference">Referenced by <a class="el" href="#ad5bc60490060612f9ce03354f20c425b">calculate_two_markers()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#ae762d14c321f6487fe5858b90186b8c0">calculate_two_markers()</a>, <a class="el" href="classtwo__marker__classes_1_1_two_marker_detector.html#aea986decfb4fc1d9fda89d22b0ef49d7">two_marker_classes.TwoMarkerDetector.get_scale()</a>, <a class="el" href="namespacemanual__measurement.html#acc4481a9460f4f27e852d2cfa514ee20">manual_measurement.main()</a>, and <a class="el" href="namespacetest__two__marker__detect.html#a9767c18a81a2d08d82b7272cb19d4dff">test_two_marker_detect.test_get_scale()</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacetwo__marker__detect_a1ddb745fe8864a32941ac58f217572fd_icgraph.png" border="0" usemap="#anamespacetwo__marker__detect_a1ddb745fe8864a32941ac58f217572fd_icgraph" alt=""/></div>
+<map name="anamespacetwo__marker__detect_a1ddb745fe8864a32941ac58f217572fd_icgraph" id="anamespacetwo__marker__detect_a1ddb745fe8864a32941ac58f217572fd_icgraph">
+<area shape="rect" title=" " alt="" coords="751,131,906,173"/>
+<area shape="rect" href="namespacetwo__marker__detect.html#ae762d14c321f6487fe5858b90186b8c0" title=" " alt="" coords="504,32,693,75"/>
+<area shape="poly" title=" " alt="" coords="775,126,702,90,669,78,671,73,704,86,777,121"/>
+<area shape="rect" href="classtwo__marker__classes_1_1_two_marker_detector.html#aea986decfb4fc1d9fda89d22b0ef49d7" title=" " alt="" coords="494,100,703,143"/>
+<area shape="poly" title=" " alt="" coords="735,142,704,138,704,133,736,137"/>
+<area shape="rect" href="namespacemanual__measurement.html#acc4481a9460f4f27e852d2cfa514ee20" title=" " alt="" coords="508,168,689,195"/>
+<area shape="poly" title=" " alt="" coords="736,166,690,172,689,167,736,161"/>
+<area shape="rect" href="namespacetest__two__marker__detect.html#a9767c18a81a2d08d82b7272cb19d4dff" title=" " alt="" coords="505,219,692,261"/>
+<area shape="poly" title=" " alt="" coords="768,182,704,209,672,221,671,215,702,204,766,178"/>
+<area shape="rect" href="namespacetest__marker__detectors.html#ab81da238ad4cf72c0ac3a3916202d37f" title=" " alt="" coords="255,29,428,72"/>
+<area shape="poly" title=" " alt="" coords="489,55,428,54,428,49,489,50"/>
+<area shape="rect" href="namespacetest__marker__detectors.html#ad6af92cc1f39913107c3ff7980ceb41c" title=" " alt="" coords="5,29,189,72"/>
+<area shape="poly" title=" " alt="" coords="239,53,189,53,189,48,239,48"/>
+<area shape="poly" title=" " alt="" coords="137,16,122,10,97,8,74,10,60,15,54,21,56,28,51,29,49,19,57,10,73,5,97,3,123,5,139,11"/>
+<area shape="rect" href="classtwo__marker__classes_1_1_two_marker_detector.html#ac56d13d23bd55bfdf5b60a75bb03f47d" title=" " alt="" coords="237,96,446,139"/>
+<area shape="poly" title=" " alt="" coords="478,122,446,122,446,116,478,117"/>
+<area shape="rect" href="namespacemanual__measurement.html#aaef56c14e48f33889008170048683de3" title=" " alt="" coords="247,163,436,205"/>
+<area shape="poly" title=" " alt="" coords="493,194,436,194,436,189,493,189"/>
+<area shape="poly" title=" " alt="" coords="451,171,508,171,508,176,451,177"/>
+</map>
+</div>
 
 </div>
 </div>

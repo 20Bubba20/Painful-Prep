@@ -1,0 +1,7 @@
+<map id="interfaces.WindowDetector" name="interfaces.WindowDetector">
+<area shape="rect" id="Node000001" title=" " alt="" coords="20,96,199,123"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,75,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="62,43,102,94,97,97,57,46"/>
+<area shape="rect" id="Node000003" href="$classinterfaces_1_1_stage_context.html" title=" " alt="" coords="99,5,261,32"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="163,46,122,97,117,94,159,42"/>
+</map>

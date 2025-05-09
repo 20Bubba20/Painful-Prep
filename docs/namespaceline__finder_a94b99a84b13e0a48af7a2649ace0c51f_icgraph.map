@@ -1,0 +1,18 @@
+<map id="line_finder.line_midpoint" name="line_finder.line_midpoint">
+<area shape="rect" id="Node000001" title=" " alt="" coords="1208,43,1369,69"/>
+<area shape="rect" id="Node000002" href="$namespaceline__finder.html#ac2f399cd5639c7984c07ef3e3596452f" title=" " alt="" coords="1030,5,1160,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1193,44,1160,39,1161,34,1193,39"/>
+<area shape="rect" id="Node000007" href="$namespaceline__finder.html#ae7ba21e0d96d8a9200177cab29ab6958" title=" " alt="" coords="863,64,982,107"/>
+<area shape="poly" id="edge9_Node000001_Node000007" title=" " alt="" coords="1193,66,983,83,982,78,1192,61"/>
+<area shape="rect" id="Node000003" href="$namespaceline__finder.html#a9a430c4d2cb29769bc6fc6583784f263" title=" " alt="" coords="684,35,815,77"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1015,36,815,53,815,48,1014,31"/>
+<area shape="poly" id="edge7_Node000002_Node000007" title=" " alt="" coords="1017,56,983,68,982,63,1015,51"/>
+<area shape="rect" id="Node000004" href="$namespaceone__marker__detect__v2.html#a122566beb915747f5e0c92f634d9c97e" title=" " alt="" coords="458,35,636,77"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="669,59,637,59,637,53,669,53"/>
+<area shape="rect" id="Node000005" href="$namespacetest__marker__detectors.html#a8b6a30f09beb3ec060a78aa6ab92b657" title=" " alt="" coords="237,35,410,77"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="443,59,411,59,411,53,443,53"/>
+<area shape="rect" id="Node000006" href="$namespacetest__marker__detectors.html#ad6af92cc1f39913107c3ff7980ceb41c" title=" " alt="" coords="5,35,189,77"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="221,59,189,59,189,53,221,53"/>
+<area shape="poly" id="edge6_Node000006_Node000006" title=" " alt="" coords="134,22,120,16,97,13,76,15,63,20,57,26,59,34,54,35,52,25,59,16,74,10,97,8,121,10,136,17"/>
+<area shape="poly" id="edge8_Node000007_Node000003" title=" " alt="" coords="847,75,815,70,816,64,848,70"/>
+</map>
