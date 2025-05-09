@@ -196,15 +196,20 @@ class TakePicture : AppCompatActivity() {
      * its URI.
      * @return String or NULL
      */
-    private fun uploadToFlask(uri: Uri): String? {
+    private suspend fun uploadToFlask(uri: Uri): String? {
+        /* Log the URI being used */
         Log.d("UploadToFlask", "Preparing file from URI: $uri")
 
-        val ip = intent.getStringExtra("Server").toString()
+        /* Open the image as a byte stream and read all bytes; return null if failed */
         val stream = contentResolver.openInputStream(uri)
         val fileBytes = stream?.use { it.readBytes() } ?: return null
 
+        /* Get the server IP address from the intent extras */
+        val ip = intent.extras?.getString("Server").toString()
+
         Log.d("UploadToFlask", "Read ${fileBytes.size} bytes from file")
 
+        /* Build a multipart/form-data request with the image and a marker size parameter */
         val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
             .addFormDataPart(
                 "image", "upload.jpg",
@@ -213,24 +218,28 @@ class TakePicture : AppCompatActivity() {
             .addFormDataPart("marker_size", "50")
             .build()
 
+        /* Build an HTTP client with timeout settings and permissive hostname verification */
         val client = OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
-            .hostnameVerifier{_, _ -> true }
+            .hostnameVerifier { _, _ -> true } /* Bypasses hostname verification (insecure for production) */
             .build()
 
+        /* Create a POST request targeting the Flask server's /detect endpoint */
         val request = Request.Builder()
-            .url("http://${ip}:5000/detect")
+            .url("http://${ip}:5000/detect") /* Update this URL if testing on a real Android device */
             .post(requestBody)
             .build()
 
         Log.d("UploadToFlask", "Sending request to Flask server")
 
+        /* Execute the request and get the response */
         val response = client.newCall(request).execute()
 
         Log.d("UploadToFlask", "Received HTTP ${response.code}")
 
+        /* Return the response body as a string and log it */
         return response.body?.string().also {
             Log.d("UploadToFlask", "Response body: $it")
         }
