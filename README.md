@@ -63,7 +63,7 @@ Code Milestone 3: `two_marker_detect` now supports more diverse marker placement
 
 Code Milestone 4: The front-end is now usable, but has not been linked up to the back-end yet. On `Logan_Branch`, a version of the front-end that connects to the back-end is in development. 
 
-Code Milestone 5: Added unit tests both on the front and backend. Renamed `demo_tool.py` to `one_marker_detect.py` and made two versions, one using Guassians and one without Gaussians. Fixed bugs in dimension calculation.
+Code Milestone 5: Added unit tests on the backend. Renamed `demo_tool.py` to `one_marker_detect.py` and made two versions, one using Guassians and one without Gaussians. Fixed bugs in dimension calculation.
 
 ## Contributing
 
