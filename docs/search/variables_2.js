@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['width_0',['width',['../namespacedemo__tool.html#a2c842750e0d0d27a70e873c0cfb1e4b4',1,'demo_tool.width'],['../namespacetwo__marker__detect.html#a732072eab700303e28ecbac148d22ee4',1,'two_marker_detect.width']]],
-  ['windowpane_1',['windowpane',['../namespacedemo__tool.html#a352fa645afbc475cf6553e9120c678f1',1,'demo_tool']]]
+  ['context_0',['context',['../classinterfaces_1_1_marker_detector.html#a51771da417408a16352b2d597389778a',1,'interfaces.MarkerDetector.context'],['../classinterfaces_1_1_window_detector.html#a57f46644b11ab8390c18c8eaf64fd9f5',1,'interfaces.WindowDetector.context'],['../classinterfaces_1_1_dimension_calculator.html#ac2a04e3c9a969ec28173d8c296553497',1,'interfaces.DimensionCalculator.context'],['../classtwo__marker__classes_1_1_two_marker_detector.html#ae4e7d5d0eb9deec60cb75b85ae978ffd',1,'two_marker_classes.TwoMarkerDetector.context']]],
+  ['contexts_1',['contexts',['../classpipeline_1_1_pipeline.html#afd5ea50c06b0ce8704518cf54a312ef5',1,'pipeline::Pipeline']]]
 ];

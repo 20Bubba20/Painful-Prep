@@ -1,0 +1,8 @@
+<map id="one_marker_detect.find_windowpane" name="one_marker_detect.find_windowpane">
+<area shape="rect" id="Node000001" title=" " alt="" coords="458,29,615,72"/>
+<area shape="rect" id="Node000002" href="$namespacetest__marker__detectors.html#af83af894efc7b33a44ffe0982c3b4925" title=" " alt="" coords="237,29,410,72"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="442,53,410,53,410,48,442,48"/>
+<area shape="rect" id="Node000003" href="$namespacetest__marker__detectors.html#ad6af92cc1f39913107c3ff7980ceb41c" title=" " alt="" coords="5,29,189,72"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="221,53,189,53,189,48,221,48"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="134,16,120,10,97,8,76,10,63,15,57,21,59,28,54,29,52,19,59,10,74,5,97,3,121,5,136,11"/>
+</map>

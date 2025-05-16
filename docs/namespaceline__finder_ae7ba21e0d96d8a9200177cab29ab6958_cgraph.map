@@ -1,0 +1,12 @@
+<map id="line_finder.select_window_edges" name="line_finder.select_window_edges">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,101,125,144"/>
+<area shape="rect" id="Node000002" href="$namespaceline__finder.html#ad0092cc15287760a9e5c13ed7e52fe1f" title=" " alt="" coords="181,5,307,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="100,98,171,58,180,53,183,58,174,62,103,103"/>
+<area shape="rect" id="Node000003" href="$namespaceline__finder.html#ac2f399cd5639c7984c07ef3e3596452f" title=" " alt="" coords="179,72,309,115"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="125,110,163,104,164,109,125,116"/>
+<area shape="rect" id="Node000004" href="$namespaceline__finder.html#a94b99a84b13e0a48af7a2649ace0c51f" title=" " alt="" coords="363,109,523,136"/>
+<area shape="poly" id="edge5_Node000001_Node000004" title=" " alt="" coords="125,123,173,124,315,124,347,123,347,129,315,129,173,129,125,128"/>
+<area shape="rect" id="Node000005" href="$namespaceline__finder.html#a81b394d31ab965a9b072285b2f3c5586" title=" " alt="" coords="173,189,315,216"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="116,142,199,180,197,185,113,147"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="310,100,348,106,347,111,309,106"/>
+</map>

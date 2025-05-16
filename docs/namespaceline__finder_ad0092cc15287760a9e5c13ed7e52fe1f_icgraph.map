@@ -1,0 +1,14 @@
+<map id="line_finder.angular_distance" name="line_finder.angular_distance">
+<area shape="rect" id="Node000001" title=" " alt="" coords="1030,29,1156,72"/>
+<area shape="rect" id="Node000002" href="$namespaceline__finder.html#ae7ba21e0d96d8a9200177cab29ab6958" title=" " alt="" coords="863,29,982,72"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1015,53,982,53,982,48,1015,48"/>
+<area shape="rect" id="Node000003" href="$namespaceline__finder.html#a9a430c4d2cb29769bc6fc6583784f263" title=" " alt="" coords="684,29,815,72"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="847,53,815,53,815,48,847,48"/>
+<area shape="rect" id="Node000004" href="$namespaceone__marker__detect__v2.html#a122566beb915747f5e0c92f634d9c97e" title=" " alt="" coords="458,29,636,72"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="669,53,637,53,637,48,669,48"/>
+<area shape="rect" id="Node000005" href="$namespacetest__marker__detectors.html#a8b6a30f09beb3ec060a78aa6ab92b657" title=" " alt="" coords="237,29,410,72"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="443,53,411,53,411,48,443,48"/>
+<area shape="rect" id="Node000006" href="$namespacetest__marker__detectors.html#ad6af92cc1f39913107c3ff7980ceb41c" title=" " alt="" coords="5,29,189,72"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="221,53,189,53,189,48,221,48"/>
+<area shape="poly" id="edge6_Node000006_Node000006" title=" " alt="" coords="134,16,120,10,97,8,76,10,63,15,57,21,59,28,54,29,52,19,59,10,74,5,97,3,121,5,136,11"/>
+</map>

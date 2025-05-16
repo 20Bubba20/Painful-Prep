@@ -1,0 +1,21 @@
+<map id="two_marker_detect.get_scale" name="two_marker_detect.get_scale">
+<area shape="rect" id="Node000001" title=" " alt="" coords="751,131,906,173"/>
+<area shape="rect" id="Node000002" href="$namespacetwo__marker__detect.html#ae762d14c321f6487fe5858b90186b8c0" title=" " alt="" coords="504,32,693,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="775,126,702,90,669,78,671,73,704,86,777,121"/>
+<area shape="rect" id="Node000005" href="$classtwo__marker__classes_1_1_two_marker_detector.html#aea986decfb4fc1d9fda89d22b0ef49d7" title=" " alt="" coords="494,100,703,143"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="735,142,704,138,704,133,736,137"/>
+<area shape="rect" id="Node000007" href="$namespacemanual__measurement.html#acc4481a9460f4f27e852d2cfa514ee20" title=" " alt="" coords="508,168,689,195"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="736,166,690,172,689,167,736,161"/>
+<area shape="rect" id="Node000009" href="$namespacetest__two__marker__detect.html#a9767c18a81a2d08d82b7272cb19d4dff" title=" " alt="" coords="505,219,692,261"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="768,182,704,209,672,221,671,215,702,204,766,178"/>
+<area shape="rect" id="Node000003" href="$namespacetest__marker__detectors.html#ab81da238ad4cf72c0ac3a3916202d37f" title=" " alt="" coords="255,29,428,72"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="489,55,428,54,428,49,489,50"/>
+<area shape="rect" id="Node000004" href="$namespacetest__marker__detectors.html#ad6af92cc1f39913107c3ff7980ceb41c" title=" " alt="" coords="5,29,189,72"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="239,53,189,53,189,48,239,48"/>
+<area shape="poly" id="edge4_Node000004_Node000004" title=" " alt="" coords="137,16,122,10,97,8,74,10,60,15,54,21,56,28,51,29,49,19,57,10,73,5,97,3,123,5,139,11"/>
+<area shape="rect" id="Node000006" href="$classtwo__marker__classes_1_1_two_marker_detector.html#ac56d13d23bd55bfdf5b60a75bb03f47d" title=" " alt="" coords="237,96,446,139"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="478,122,446,122,446,116,478,117"/>
+<area shape="rect" id="Node000008" href="$namespacemanual__measurement.html#aaef56c14e48f33889008170048683de3" title=" " alt="" coords="247,163,436,205"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="493,194,436,194,436,189,493,189"/>
+<area shape="poly" id="edge9_Node000008_Node000007" title=" " alt="" coords="451,171,508,171,508,176,451,177"/>
+</map>

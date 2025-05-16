@@ -1,0 +1,7 @@
+<map id="two_marker_detect.calculate_two_markers" name="two_marker_detect.calculate_two_markers">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,39,194,81"/>
+<area shape="rect" id="Node000002" href="$namespacetwo__marker__detect.html#adfdc5b0703a5587ad0829f4961e5298c" title=" " alt="" coords="242,5,396,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="194,43,226,38,227,43,194,48"/>
+<area shape="rect" id="Node000003" href="$namespacetwo__marker__detect.html#a1ddb745fe8864a32941ac58f217572fd" title=" " alt="" coords="242,72,396,115"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="194,72,227,77,226,82,194,77"/>
+</map>
