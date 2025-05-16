@@ -24,7 +24,7 @@
 */
 var NAVTREE =
 [
-  [ "PainfulPrep", "index.html", [
+  [ "PainlessPrep-CapstoneSpring2025", "index.html", [
     [ "Packages", "namespaces.html", [
       [ "Package List", "namespaces.html", "namespaces_dup" ],
       [ "Package Members", "namespacemembers.html", [
