@@ -1,4 +1,4 @@
-# Painful-Prep
+# Painless Prep Spring 2025
 CSCI4970-Capstone Spring 2025
 
 ## About
