@@ -41,7 +41,7 @@ To use the `test_marker_detectors` tool, follow the below steps:
 1. Navigate to the directory where `test_marker_detectors.py` is located.
 2. Run: `python test_marker_detectors.py`.
 
-To use the `mobile app`, follow the below steps.
+To use the `mobile app`, follow the below steps:
 
 1. Go to [this website](https://chev.me/arucogen/) to generate an ArUco marker, size 100mm, marker ID 0, and in the 4x4 dictionary.
 2. Save the marker and print to scale.
@@ -52,6 +52,12 @@ To use the `mobile app`, follow the below steps.
 7. Run the follow command to install dependencies: `pip install -r requirements.txt`
 8. Run the python backend: `python .\back_end\app.py`
 9. Install the apk found in `front-end\app-debug.apk`
+
+To build the `mobile app`'s APK, follow the below steps:
+1. Download and install [Android Studio](https://developer.android.com/studio)
+2. Within Android Studio, open the project "`front-end\UITest`"
+3. Build > Generate App Bundles or APKs > Generate APKs
+4. The APK will be in "`front-end\UITest\app\build\outputs\`"
 
 ## Release Notes
 
